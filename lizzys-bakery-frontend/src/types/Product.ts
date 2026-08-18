@@ -1,5 +1,15 @@
-import axiosInstance from '../api/axiosInstance';
 import type Category from './Category';
+
+// Matches ProductListSerializer — the lighter shape used on the menu grid
+export default interface Product {
+  id: number;
+  name: string;
+  slug: string;
+  category: string;    // StringRelatedField — just the category name here, not the full object
+  base_price: string;  // Decimal serialized as string by DRF
+  main_image: string | null;
+  is_available: boolean;
+}
 
 // Matches ProductImage model — one photo in a product's gallery
 export interface ProductImage {
@@ -22,10 +32,4 @@ export interface ProductDetail {
   images: ProductImage[];
   is_available: boolean;
   is_made_to_order: boolean;
-}
-
-// Fetches ONE product by its slug — matches ProductDetailView's lookup_field = 'slug'
-export default async function fetchProductDetail(slug: string): Promise<ProductDetail> {
-  const response = await axiosInstance.get<ProductDetail>(`/products/${slug}/`);
-  return response.data;
 }
