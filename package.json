@@ -1,0 +1,12 @@
+{
+  "name": "lizzys-bakery",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n frontend,backend -c blue,green \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "npm --prefix lizzys-bakery-frontend run dev",
+    "dev:backend": "lizzys-bakery-backend\\venv\\Scripts\\python.exe lizzys-bakery-backend\\manage.py runserver"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.4"
+  }
+}
