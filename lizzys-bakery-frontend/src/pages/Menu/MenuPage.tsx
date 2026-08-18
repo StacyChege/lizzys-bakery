@@ -138,14 +138,7 @@ export default function MenuPage() {
         <div className="text-center py-12 text-bakery-brown/60">
           Updating menu...
         </div>
-      ) : products.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      ) : (
-        /* --- UPGRADED EMPTY STATE --- */
+      ) : products.length === 0 ? (
         <div className="text-center py-16">
           <p className="font-script text-3xl text-bakery-pink-dark mb-2">
             Nothing here yet!
@@ -157,6 +150,12 @@ export default function MenuPage() {
               ? "No products in this category right now — check back soon."
               : "The menu is empty. Please check back later."}
           </p>
+        </div>
+      ) : (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
         </div>
       )}
     </div>

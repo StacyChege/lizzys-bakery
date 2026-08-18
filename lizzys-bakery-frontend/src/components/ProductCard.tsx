@@ -1,4 +1,5 @@
 import type Product from '../types/Product';
+import { Link } from 'react-router-dom';
 
 interface ProductCardProps {
   product: Product;
@@ -6,8 +7,9 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   return (
-    <div
-      className={`relative border border-bakery-pink/20 rounded-xl bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col ${
+    <Link
+      to={`/product/${product.slug}`}
+      className={`relative block border border-bakery-pink/20 rounded-xl bg-white overflow-hidden hover:shadow-md transition-shadow ${
         !product.is_available ? 'opacity-60' : ''
       }`}
     >
@@ -32,7 +34,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
 
       {/* Card Details */}
-      <div className="p-4 flex flex-col justify-between flex-grow">
+      <div className="p-4 flex flex-col justify-between grow">
         <div>
           <span className="text-xs font-medium text-bakery-pink-dark uppercase tracking-wider">
             {product.category}
@@ -48,6 +50,6 @@ export default function ProductCard({ product }: ProductCardProps) {
           </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
