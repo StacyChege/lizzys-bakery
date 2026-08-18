@@ -116,11 +116,11 @@ export default function MenuPage() {
 
         {/* Dynamic Category Pills fetched from Django */}
         {categories.map((category) => {
-          const isSelected = selectedCategory === category.name;
+          const isSelected = selectedCategory === category.slug;
           return (
             <button
               key={category.id}
-              onClick={() => setSelectedCategory(category.name)}
+              onClick={() => setSelectedCategory(category.slug)}
               className={`whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
                 isSelected
                   ? 'bg-bakery-pink text-white'
