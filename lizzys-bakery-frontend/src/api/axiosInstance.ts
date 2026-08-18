@@ -51,7 +51,7 @@ axiosInstance.interceptors.response.use(
         if (!refreshToken) throw new Error('No refresh token available');
         
         const { data } = await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/auth/refresh/`,
+          `${import.meta.env.VITE_API_BASE_URL}/auth/token/refresh/`,
           { refresh: refreshToken }
         );
 
