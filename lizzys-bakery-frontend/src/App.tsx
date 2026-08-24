@@ -8,6 +8,7 @@ import AdminDashboard from './pages/Admin/AdminDashboard';
 import AccountPage from './pages/Account/AccountPage';
 import MenuPage from './pages/Menu/MenuPage';
 import ProductDetailPage from './pages/ProductDetail/ProductDetailPage';
+import HomePage from './pages/Home/HomePage';
 
 function App() {
   return (
@@ -38,7 +39,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          {/* Home, Menu, etc. still pending their own scheduled sessions */}
+          <Route path="/" element={<HomePage />} />
           <Route path="/menu" element={<MenuPage />} />
           <Route path="/product/:slug" element={<ProductDetailPage />} />
         </Routes>
