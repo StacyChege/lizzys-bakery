@@ -1,0 +1,29 @@
+services:
+
+  backend:
+    image: ghcr.io/stacychege/lizzys-bakery-backend:latest
+    pull_policy: always
+    container_name: lizzys-bakery-backend
+    restart: unless-stopped
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      DEBUG: ${DEBUG:-False}
+      DATABASE_URL: ${DATABASE_URL}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
+      CSRF_TRUSTED_ORIGINS: ${CSRF_TRUSTED_ORIGINS}
+    volumes:
+      - media:/app/media
+    expose:
+      - "8000"
+
+  frontend:
+    image: ghcr.io/stacychege/lizzys-bakery-frontend:latest
+    pull_policy: always
+    container_name: lizzys-bakery-frontend
+    restart: unless-stopped
+    expose:
+      - "80"
+
+volumes:
+  media:
