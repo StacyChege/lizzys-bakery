@@ -1,0 +1,100 @@
+import { Link } from 'react-router-dom';
+import { useCart } from '../../hooks/useCart';
+
+export default function CartPage() {
+  const { items, totalPrice, updateQuantity, removeItem } = useCart();
+
+  if (items.length === 0) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-20 text-center font-body">
+        <p className="font-script text-3xl text-bakery-pink-dark mb-2">Your cart is empty</p>
+        <p className="text-bakery-brown/60 mb-6">Looks like you haven't added anything yet.</p>
+        <Link
+          to="/menu"
+          className="inline-block bg-bakery-pink text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-bakery-pink-dark transition-colors"
+        >
+          Browse the Menu
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-3xl mx-auto px-4 py-10 font-body">
+      <h1 className="font-script text-4xl text-bakery-pink-dark mb-6">Your Cart</h1>
+
+      <div className="space-y-4 mb-8">
+        {items.map((item) => {
+          const unitPrice = item.basePrice + (item.size?.price_modifier ?? 0);
+          return (
+            <div
+              key={item.id}
+              className="flex items-center gap-4 border border-bakery-pink/20 rounded-xl p-4 bg-white"
+            >
+              <div className="w-20 h-20 rounded-lg bg-bakery-cream/60 flex items-center justify-center overflow-hidden shrink-0">
+                {item.image ? (
+                  <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-bakery-pink/40 text-xs text-center px-1">No Image</span>
+                )}
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold text-bakery-brown truncate">{item.name}</h3>
+                {(item.flavour || item.size) && (
+                  <p className="text-xs text-bakery-brown/60">
+                    {[item.flavour, item.size?.label].filter(Boolean).join(' · ')}
+                  </p>
+                )}
+                <p className="text-bakery-pink-dark font-medium text-sm mt-1">
+                  KES {unitPrice.toLocaleString()}
+                </p>
+              </div>
+
+              <div className="flex items-center border border-bakery-pink/30 rounded-lg">
+                <button
+                  onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                  className="px-2.5 py-1 text-bakery-brown hover:text-bakery-pink-dark"
+                  aria-label="Decrease quantity"
+                >
+                  −
+                </button>
+                <span className="px-2.5 text-sm font-medium text-bakery-brown">{item.quantity}</span>
+                <button
+                  onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                  className="px-2.5 py-1 text-bakery-brown hover:text-bakery-pink-dark"
+                  aria-label="Increase quantity"
+                >
+                  +
+                </button>
+              </div>
+
+              <button
+                onClick={() => removeItem(item.id)}
+                className="text-bakery-brown/40 hover:text-red-500 text-sm shrink-0"
+                aria-label={`Remove ${item.name} from cart`}
+              >
+                Remove
+              </button>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="border-t border-bakery-pink/20 pt-6 flex items-center justify-between">
+        <span className="text-lg font-semibold text-bakery-brown">Total</span>
+        <span className="text-xl font-bold text-bakery-pink-dark">
+          KES {totalPrice.toLocaleString()}
+        </span>
+      </div>
+
+      <button
+        disabled
+        title="Checkout is coming soon"
+        className="w-full mt-6 bg-bakery-pink text-white font-semibold py-3 rounded-lg opacity-50 cursor-not-allowed"
+      >
+        Checkout (coming soon)
+      </button>
+    </div>
+  );
+}

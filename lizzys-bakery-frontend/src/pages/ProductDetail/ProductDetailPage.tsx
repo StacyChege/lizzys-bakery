@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { fetchProductDetail } from '../../api/products';
 import type { ProductDetail } from '../../types/Product';
+import { useCart } from '../../hooks/useCart';
 
 export default function ProductDetailPage() {
+  const { addItem } = useCart();
+
   // useParams() reads whatever value is in the URL where the route defines :slug.
   // Example: URL is /product/chocolate-cake → slug === "chocolate-cake"
   const { slug } = useParams<{ slug: string }>();
@@ -18,6 +22,7 @@ export default function ProductDetailPage() {
   // Which flavour/size the customer has clicked — start as null meaning "nothing chosen yet"
   const [selectedFlavour, setSelectedFlavour] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<{ label: string; price_modifier: number } | null>(null);
+  const [quantity, setQuantity] = useState(1);
 
   // This effect depends on [slug] — meaning if slug ever changes (e.g. you click a DIFFERENT
   // product while already on this page), it re-runs and fetches the new product's data.
@@ -42,6 +47,7 @@ export default function ProductDetailPage() {
         setActiveImageIndex(0);
         setSelectedFlavour(null);
         setSelectedSize(null);
+        setQuantity(1);
       } catch {
         if (!isMounted) return;
         setError('Could not load this product. It may no longer be available.');
@@ -172,11 +178,49 @@ export default function ProductDetailPage() {
           </div>
         )}
 
-        {/* Placeholder note — deliberately no Add to Cart button tonight.
-            That's Week 4 Monday's task, once CartContext actually exists to add TO. */}
-        <p className="text-sm text-bakery-brown/40 italic">
-          Quantity selector and Add to Cart button arrive next week, once the cart system is built.
-        </p>
+        {/* QUANTITY + ADD TO CART */}
+        <div className="flex items-center gap-4">
+          <div className="flex items-center border border-bakery-pink/30 rounded-lg">
+            <button
+              onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+              className="px-3 py-2 text-bakery-brown hover:text-bakery-pink-dark"
+              aria-label="Decrease quantity"
+            >
+              −
+            </button>
+            <span className="px-3 font-medium text-bakery-brown">{quantity}</span>
+            <button
+              onClick={() => setQuantity((q) => q + 1)}
+              className="px-3 py-2 text-bakery-brown hover:text-bakery-pink-dark"
+              aria-label="Increase quantity"
+            >
+              +
+            </button>
+          </div>
+
+          <button
+            onClick={() => {
+              addItem(
+                {
+                  id: `${product.id}-${selectedFlavour ?? 'none'}-${selectedSize?.label ?? 'none'}`,
+                  productId: product.id,
+                  slug: product.slug,
+                  name: product.name,
+                  image: product.images[0]?.image ?? null,
+                  basePrice: Number(product.base_price),
+                  flavour: selectedFlavour,
+                  size: selectedSize,
+                },
+                quantity
+              );
+              toast.success(`Added ${product.name} to cart`);
+            }}
+            disabled={!product.is_available}
+            className="flex-1 bg-bakery-pink text-white font-semibold py-2.5 rounded-lg hover:bg-bakery-pink-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {product.is_available ? 'Add to Cart' : 'Sold Out'}
+          </button>
+        </div>
       </div>
     </div>
   );

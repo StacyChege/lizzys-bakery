@@ -3,13 +3,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, User, Menu as MenuIcon, LogOut } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
+import { useCart } from '../hooks/useCart';
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
+  const { totalItems } = useCart();
   const navigate = useNavigate();
 
-  const cartItemCount = 0; // still a stub — CartContext isn't built until Week 4, this one's fine to leave
+  const cartItemCount = totalItems;
 
   const navLinks = [
     { label: 'Home', to: '/' },
