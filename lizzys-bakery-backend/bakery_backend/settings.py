@@ -28,7 +28,15 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+def _split(value):
+    return [item.strip() for item in value.split(',') if item.strip()]
+
+
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='127.0.0.1,localhost',
+    cast=_split,
+)
 
 
 # Application definition
@@ -52,6 +60,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -127,14 +136,25 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
 
 
 AUTH_USER_MODEL = 'users.User'
 
-CSRF_TRUSTED_ORIGINS = [
-    'http://127.0.0.1:8000',
-    'http://localhost:8000',
-]
+CSRF_TRUSTED_ORIGINS = config(
+    'CSRF_TRUSTED_ORIGINS',
+    default='http://127.0.0.1:8000,http://localhost:8000',
+    cast=_split,
+)
 
 
 REST_FRAMEWORK = {
@@ -164,12 +184,11 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # CORS Configurations
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5174",
-    "http://localhost:5173",
-    "http://127.0.0.1:5174",
-    "http://127.0.0.1:5173",
-]
+CORS_ALLOWED_ORIGINS = config(
+    'CORS_ALLOWED_ORIGINS',
+    default='http://localhost:5173,http://localhost:5174,http://127.0.0.1:5173,http://127.0.0.1:5174',
+    cast=_split,
+)
 
 # Prevent Django from crashing or redirecting POST requests that lack a trailing slash
 APPEND_SLASH = False
