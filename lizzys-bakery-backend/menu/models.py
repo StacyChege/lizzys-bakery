@@ -63,3 +63,37 @@ class ProductImage(models.Model):
 
     def __str__(self):
         return f"Image for {self.product.name}"
+
+
+class CustomCakeRequest(models.Model):
+    # A baker-reviewed inquiry, not an instant order — no price/availability
+    # exists until Lizzy looks at it, so this is deliberately just contact
+    # details + what they want, triaged in the admin.
+    PENDING = 'PENDING'
+    REVIEWED = 'REVIEWED'
+    QUOTED = 'QUOTED'
+    CONFIRMED = 'CONFIRMED'
+    DECLINED = 'DECLINED'
+    STATUS_CHOICES = [
+        (PENDING, 'Pending'),
+        (REVIEWED, 'Reviewed'),
+        (QUOTED, 'Quoted'),
+        (CONFIRMED, 'Confirmed'),
+        (DECLINED, 'Declined'),
+    ]
+
+    name = models.CharField(max_length=150)
+    email = models.EmailField()
+    phone_number = models.CharField(max_length=20)
+    date_needed = models.DateField()
+    description = models.TextField()  # flavour, size, theme, occasion — free text from the customer
+    budget = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default=PENDING)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.name} — {self.date_needed}"

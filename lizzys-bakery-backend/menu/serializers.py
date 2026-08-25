@@ -1,5 +1,10 @@
+from datetime import timedelta
+
+from django.utils import timezone
 from rest_framework import serializers
-from .models import Category, Product, ProductImage
+from .models import Category, CustomCakeRequest, Product, ProductImage
+
+MIN_LEAD_DAYS = 5
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
@@ -40,3 +45,22 @@ class ProductDetailSerializer(serializers.ModelSerializer):
             'available_flavours', 'available_sizes', 'images',
             'is_available', 'is_made_to_order',
         ]
+
+
+class CustomCakeRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomCakeRequest
+        # status/created_at are baker-managed, not customer-settable — omitted from input
+        fields = [
+            'id', 'name', 'email', 'phone_number', 'date_needed',
+            'description', 'budget',
+        ]
+
+    def validate_date_needed(self, value):
+        earliest = timezone.localdate() + timedelta(days=MIN_LEAD_DAYS)
+        if value < earliest:
+            raise serializers.ValidationError(
+                f'Custom cake requests need at least {MIN_LEAD_DAYS} days notice — '
+                f'earliest available date is {earliest.isoformat()}.'
+            )
+        return value

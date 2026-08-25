@@ -10,6 +10,7 @@ import MenuPage from './pages/Menu/MenuPage';
 import ProductDetailPage from './pages/ProductDetail/ProductDetailPage';
 import HomePage from './pages/Home/HomePage';
 import CartPage from './pages/Cart/CartPage';
+import CustomCakePage from './pages/CustomCake/CustomCakePage';
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
           <Route path="/menu" element={<MenuPage />} />
           <Route path="/product/:slug" element={<ProductDetailPage />} />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/custom-cake" element={<CustomCakePage />} />
         </Routes>
       </main>
 
