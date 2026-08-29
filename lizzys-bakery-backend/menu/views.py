@@ -1,8 +1,11 @@
 from rest_framework import generics
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Category, CustomCakeRequest, Product
+from .permissions import IsBakeryAdmin
 from .serializers import (
+    AdminCategorySerializer,
+    AdminProductSerializer,
     CategorySerializer,
     CustomCakeRequestSerializer,
     ProductListSerializer,
@@ -34,3 +37,35 @@ class CustomCakeRequestCreateView(generics.CreateAPIView):
     queryset = CustomCakeRequest.objects.all()
     serializer_class = CustomCakeRequestSerializer
     permission_classes = [AllowAny]
+
+
+# --- Admin menu management (Django admin still handles image uploads and
+# available_sizes editing for now — this covers the fields the baker
+# changes day to day: name, price, description, flavours, availability) ---
+
+class AdminCategoryListCreateView(generics.ListCreateAPIView):
+    # Unlike CategoryListView, not filtered — the baker needs to see/manage
+    # every category, not just ones with visible products.
+    queryset = Category.objects.all()
+    serializer_class = AdminCategorySerializer
+    permission_classes = [IsAuthenticated, IsBakeryAdmin]
+
+
+class AdminCategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Category.objects.all()
+    serializer_class = AdminCategorySerializer
+    permission_classes = [IsAuthenticated, IsBakeryAdmin]
+
+
+class AdminProductListCreateView(generics.ListCreateAPIView):
+    # Unlike ProductListView, includes unavailable products — the baker
+    # needs to see and re-enable sold-out items, not just what's live.
+    queryset = Product.objects.all()
+    serializer_class = AdminProductSerializer
+    permission_classes = [IsAuthenticated, IsBakeryAdmin]
+
+
+class AdminProductDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = AdminProductSerializer
+    permission_classes = [IsAuthenticated, IsBakeryAdmin]

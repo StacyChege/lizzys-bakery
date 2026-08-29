@@ -12,6 +12,7 @@ import HomePage from './pages/Home/HomePage';
 import CartPage from './pages/Cart/CartPage';
 import CustomCakePage from './pages/CustomCake/CustomCakePage';
 import StaffPage from './pages/Staff/StaffPage';
+import MenuManagementPage from './pages/Admin/MenuManagementPage';
 
 function App() {
   return (
@@ -39,6 +40,14 @@ function App() {
             element={
               <ProtectedRoute requiredRole="ADMIN">
                 <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/menu"
+            element={
+              <ProtectedRoute requiredRole="ADMIN">
+                <MenuManagementPage />
               </ProtectedRoute>
             }
           />

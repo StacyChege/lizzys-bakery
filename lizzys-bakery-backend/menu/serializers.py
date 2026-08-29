@@ -47,6 +47,26 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         ]
 
 
+class AdminCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'name', 'slug', 'description', 'image', 'sort_order']
+        read_only_fields = ['slug']  # auto-generated from name in Category.save()
+
+
+class AdminProductSerializer(serializers.ModelSerializer):
+    # Unlike ProductListSerializer/ProductDetailSerializer (read-oriented,
+    # nested category object), this takes category as a plain FK id so the
+    # admin form can just POST/PATCH a category id.
+    class Meta:
+        model = Product
+        fields = [
+            'id', 'category', 'name', 'slug', 'description', 'base_price',
+            'available_flavours', 'available_sizes', 'is_available', 'is_made_to_order',
+        ]
+        read_only_fields = ['slug']
+
+
 class CustomCakeRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomCakeRequest

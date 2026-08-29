@@ -1,6 +1,7 @@
-// Order inbox, menu management, and broader stats are still future work —
-// this only covers the staff clock-in/stock/sales tracking built so far.
+// Order inbox and broader sales stats are still future work — this covers
+// staff clock-in/stock/sales tracking and menu management (via /admin/menu).
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { fetchAdminSummary } from '../../api/staff';
 import type { AdminDailySummary } from '../../types/StaffShift';
@@ -21,8 +22,18 @@ export default function AdminDashboard() {
   return (
     <div className="bg-bakery-pink/10 min-h-screen py-10 px-4">
     <div className="max-w-3xl mx-auto font-body">
-      <h1 className="font-script text-4xl text-bakery-pink-dark mb-1">Admin Dashboard</h1>
-      <p className="text-bakery-brown/60 mb-8">Welcome, {user?.full_name}</p>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="font-script text-4xl text-bakery-pink-dark mb-1">Admin Dashboard</h1>
+          <p className="text-bakery-brown/60">Welcome, {user?.full_name}</p>
+        </div>
+        <Link
+          to="/admin/menu"
+          className="bg-bakery-pink-dark text-white font-semibold px-5 py-2 rounded-full hover:bg-bakery-brown transition-colors text-sm"
+        >
+          Manage Menu
+        </Link>
+      </div>
 
       <h2 className="font-semibold text-bakery-brown text-lg mb-4">
         Today's Summary {summary && `— ${summary.date}`}
