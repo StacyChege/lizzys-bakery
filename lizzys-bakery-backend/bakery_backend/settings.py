@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'users',
     'menu',
+    'staff',
 ]
 
 MIDDLEWARE = [
@@ -194,4 +195,11 @@ CORS_ALLOWED_ORIGINS = config(
 APPEND_SLASH = False
 
 CORS_ALLOW_CREDENTIALS = True
+
+# django-cors-headers only allows its own default header set unless told
+# otherwise — X-Staff-Token (the staff kiosk's auth header) isn't in it,
+# so every staff API call would fail CORS preflight without this.
+from corsheaders.defaults import default_headers
+
+CORS_ALLOW_HEADERS = list(default_headers) + ['x-staff-token']
 

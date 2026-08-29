@@ -11,6 +11,7 @@ import ProductDetailPage from './pages/ProductDetail/ProductDetailPage';
 import HomePage from './pages/Home/HomePage';
 import CartPage from './pages/Cart/CartPage';
 import CustomCakePage from './pages/CustomCake/CustomCakePage';
+import StaffPage from './pages/Staff/StaffPage';
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
           <Route path="/product/:slug" element={<ProductDetailPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/custom-cake" element={<CustomCakePage />} />
+          <Route path="/staff" element={<StaffPage />} />
         </Routes>
       </main>
 
