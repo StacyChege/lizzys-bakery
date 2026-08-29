@@ -58,8 +58,10 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-[70vh] flex items-center justify-center bg-bakery-cream px-4 py-10">
-      <div className="bg-white rounded-2xl shadow-md p-8 w-full max-w-sm border border-bakery-pink/20">
+    <div className="min-h-[70vh] flex items-center justify-center bg-bakery-pink/10 px-4 py-12">
+      <div className="relative bg-white rounded-3xl shadow-lg p-8 pt-10 w-full max-w-sm border-2 border-dashed border-bakery-pink/40">
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-bakery-pink-dark shadow-md" />
+
         <h1 className="font-script text-4xl text-bakery-pink-dark text-center mb-1">Join Us</h1>
         <p className="font-body text-sm text-center text-bakery-brown/70 mb-6">Create your account</p>
 
@@ -126,7 +128,7 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-bakery-pink text-white font-semibold py-2 rounded-lg hover:bg-bakery-pink-dark transition-colors disabled:opacity-50"
+            className="w-full bg-bakery-pink-dark text-white font-semibold py-2.5 rounded-full hover:bg-bakery-brown transition-colors disabled:opacity-50"
           >
             {isSubmitting ? 'Creating account…' : 'Register'}
           </button>

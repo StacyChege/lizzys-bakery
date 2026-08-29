@@ -1,8 +1,10 @@
 import { Phone, MapPin } from 'lucide-react';
+import ScallopDivider from './ScallopDivider';
 
 export default function Footer() {
   return (
-    <footer className="bg-bakery-brown text-bakery-cream font-body mt-16">
+    <footer className="relative bg-bakery-brown text-bakery-cream font-body mt-16">
+      <ScallopDivider fill="#3B2621" className="absolute -top-5 left-0" />
       {/* 3-Column layout grid that stacks vertically on mobile, splits up on medium desktops */}
       <div className="max-w-6xl mx-auto px-4 py-10 grid gap-8 md:grid-cols-3">
         

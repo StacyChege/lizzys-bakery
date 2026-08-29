@@ -53,24 +53,29 @@ export default function CustomCakePage() {
 
   if (submitted) {
     return (
-      <div className="max-w-lg mx-auto px-4 py-20 text-center font-body">
-        <p className="font-script text-4xl text-bakery-pink-dark mb-3">Request sent!</p>
-        <p className="text-bakery-brown/70">
-          Thanks, {name.split(' ')[0]} — we'll be in touch at {email} to talk through the details.
-        </p>
+      <div className="bg-bakery-pink/10 py-20 px-4">
+        <div className="max-w-lg mx-auto text-center font-body">
+          <p className="font-script text-4xl text-bakery-pink-dark mb-3">Request sent!</p>
+          <p className="text-bakery-brown/70">
+            Thanks, {name.split(' ')[0]} — we'll be in touch at {email} to talk through the details.
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-xl mx-auto px-4 py-10 font-body">
-      <h1 className="font-script text-4xl text-bakery-pink-dark mb-2">Custom Cake Request</h1>
-      <p className="text-bakery-brown/70 mb-8">
-        Tell us what you're celebrating and we'll get back to you with a quote. Requests need
-        at least 5 days notice.
-      </p>
+    <div className="bg-bakery-pink/10 py-12 px-4">
+      <div className="relative max-w-xl mx-auto bg-white rounded-3xl shadow-lg p-8 pt-10 border-2 border-dashed border-bakery-pink/40">
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-bakery-pink-dark shadow-md" />
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+        <h1 className="font-script text-4xl text-bakery-pink-dark mb-2 text-center">Custom Cake Request</h1>
+        <p className="text-bakery-brown/70 mb-8 text-center">
+          Tell us what you're celebrating and we'll get back to you with a quote. Requests need
+          at least 5 days notice.
+        </p>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <input
             type="text"
@@ -144,11 +149,12 @@ export default function CustomCakePage() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-bakery-pink text-white font-semibold py-2.5 rounded-lg hover:bg-bakery-pink-dark transition-colors disabled:opacity-50"
+          className="w-full bg-bakery-pink-dark text-white font-semibold py-2.5 rounded-full hover:bg-bakery-brown transition-colors disabled:opacity-50"
         >
           {isSubmitting ? 'Sending…' : 'Send Request'}
         </button>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }

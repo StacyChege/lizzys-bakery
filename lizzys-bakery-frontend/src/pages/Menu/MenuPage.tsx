@@ -107,7 +107,7 @@ export default function MenuPage() {
           onClick={() => setSelectedCategory('')}
           className={`whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
             selectedCategory === ''
-              ? 'bg-bakery-pink text-white'
+              ? 'bg-bakery-pink-dark text-white'
               : 'bg-bakery-cream text-bakery-brown hover:bg-bakery-pink/20'
           }`}
         >
@@ -123,7 +123,7 @@ export default function MenuPage() {
               onClick={() => setSelectedCategory(category.slug)}
               className={`whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
                 isSelected
-                  ? 'bg-bakery-pink text-white'
+                  ? 'bg-bakery-pink-dark text-white'
                   : 'bg-bakery-cream text-bakery-brown hover:bg-bakery-pink/20'
               }`}
             >

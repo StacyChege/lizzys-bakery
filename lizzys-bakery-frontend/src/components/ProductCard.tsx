@@ -9,7 +9,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   return (
     <Link
       to={`/product/${product.slug}`}
-      className={`relative block border border-bakery-pink/20 rounded-xl bg-white overflow-hidden hover:shadow-md transition-shadow ${
+      className={`relative block rounded-xl bg-white overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all border-t-4 border-bakery-pink ${
         !product.is_available ? 'opacity-60' : ''
       }`}
     >

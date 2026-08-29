@@ -144,7 +144,7 @@ export default function ProductDetailPage() {
                   onClick={() => setSelectedFlavour(flavour)}
                   className={`px-4 py-1.5 rounded-full text-sm border transition-colors ${
                     selectedFlavour === flavour
-                      ? 'bg-bakery-pink text-white border-bakery-pink'
+                      ? 'bg-bakery-pink-dark text-white border-bakery-pink-dark'
                       : 'bg-white text-bakery-brown border-bakery-pink/30'
                   }`}
                 >
@@ -166,7 +166,7 @@ export default function ProductDetailPage() {
                   onClick={() => setSelectedSize(size)}
                   className={`px-4 py-1.5 rounded-full text-sm border transition-colors ${
                     selectedSize?.label === size.label
-                      ? 'bg-bakery-pink text-white border-bakery-pink'
+                      ? 'bg-bakery-pink-dark text-white border-bakery-pink-dark'
                       : 'bg-white text-bakery-brown border-bakery-pink/30'
                   }`}
                 >
@@ -216,7 +216,7 @@ export default function ProductDetailPage() {
               toast.success(`Added ${product.name} to cart`);
             }}
             disabled={!product.is_available}
-            className="flex-1 bg-bakery-pink text-white font-semibold py-2.5 rounded-lg hover:bg-bakery-pink-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 bg-bakery-pink-dark text-white font-semibold py-2.5 rounded-full hover:bg-bakery-brown transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {product.is_available ? 'Add to Cart' : 'Sold Out'}
           </button>

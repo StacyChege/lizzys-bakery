@@ -6,21 +6,24 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-20 text-center font-body">
-        <p className="font-script text-3xl text-bakery-pink-dark mb-2">Your cart is empty</p>
-        <p className="text-bakery-brown/60 mb-6">Looks like you haven't added anything yet.</p>
-        <Link
-          to="/menu"
-          className="inline-block bg-bakery-pink text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-bakery-pink-dark transition-colors"
-        >
-          Browse the Menu
-        </Link>
+      <div className="bg-bakery-pink/10 min-h-[70vh] flex items-center px-4">
+        <div className="max-w-2xl mx-auto text-center font-body">
+          <p className="font-script text-3xl text-bakery-pink-dark mb-2">Your cart is empty</p>
+          <p className="text-bakery-brown/60 mb-6">Looks like you haven't added anything yet.</p>
+          <Link
+            to="/menu"
+            className="inline-block bg-bakery-pink-dark text-white font-semibold px-6 py-2.5 rounded-full hover:bg-bakery-brown transition-colors"
+          >
+            Browse the Menu
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-10 font-body">
+    <div className="bg-bakery-pink/10 min-h-screen py-10 px-4">
+    <div className="max-w-3xl mx-auto font-body">
       <h1 className="font-script text-4xl text-bakery-pink-dark mb-6">Your Cart</h1>
 
       <div className="space-y-4 mb-8">
@@ -29,7 +32,7 @@ export default function CartPage() {
           return (
             <div
               key={item.id}
-              className="flex items-center gap-4 border border-bakery-pink/20 rounded-xl p-4 bg-white"
+              className="flex items-center gap-4 rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="w-20 h-20 rounded-lg bg-bakery-cream/60 flex items-center justify-center overflow-hidden shrink-0">
                 {item.image ? (
@@ -81,7 +84,7 @@ export default function CartPage() {
         })}
       </div>
 
-      <div className="border-t border-bakery-pink/20 pt-6 flex items-center justify-between">
+      <div className="bg-white rounded-xl shadow-sm p-5 flex items-center justify-between">
         <span className="text-lg font-semibold text-bakery-brown">Total</span>
         <span className="text-xl font-bold text-bakery-pink-dark">
           KES {totalPrice.toLocaleString()}
@@ -91,10 +94,11 @@ export default function CartPage() {
       <button
         disabled
         title="Checkout is coming soon"
-        className="w-full mt-6 bg-bakery-pink text-white font-semibold py-3 rounded-lg opacity-50 cursor-not-allowed"
+        className="w-full mt-6 bg-bakery-pink-dark text-white font-semibold py-3 rounded-full opacity-50 cursor-not-allowed"
       >
         Checkout (coming soon)
       </button>
+    </div>
     </div>
   );
 }
