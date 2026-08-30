@@ -14,6 +14,7 @@ import CustomCakePage from './pages/CustomCake/CustomCakePage';
 import StaffPage from './pages/Staff/StaffPage';
 import MenuManagementPage from './pages/Admin/MenuManagementPage';
 import CheckoutPage from './pages/Checkout/CheckoutPage';
+import OrdersPage from './pages/Admin/OrdersPage';
 
 function App() {
   return (
@@ -49,6 +50,14 @@ function App() {
             element={
               <ProtectedRoute requiredRole="ADMIN">
                 <MenuManagementPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/orders"
+            element={
+              <ProtectedRoute requiredRole="ADMIN">
+                <OrdersPage />
               </ProtectedRoute>
             }
           />

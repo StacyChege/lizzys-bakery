@@ -27,12 +27,20 @@ export default function AdminDashboard() {
           <h1 className="font-script text-4xl text-bakery-pink-dark mb-1">Admin Dashboard</h1>
           <p className="text-bakery-brown/60">Welcome, {user?.full_name}</p>
         </div>
-        <Link
-          to="/admin/menu"
-          className="bg-bakery-pink-dark text-white font-semibold px-5 py-2 rounded-full hover:bg-bakery-brown transition-colors text-sm"
-        >
-          Manage Menu
-        </Link>
+        <div className="flex gap-2">
+          <Link
+            to="/admin/orders"
+            className="bg-white text-bakery-pink-dark border-2 border-bakery-pink-dark font-semibold px-5 py-2 rounded-full hover:bg-bakery-pink/10 transition-colors text-sm"
+          >
+            View Orders
+          </Link>
+          <Link
+            to="/admin/menu"
+            className="bg-bakery-pink-dark text-white font-semibold px-5 py-2 rounded-full hover:bg-bakery-brown transition-colors text-sm"
+          >
+            Manage Menu
+          </Link>
+        </div>
       </div>
 
       <h2 className="font-semibold text-bakery-brown text-lg mb-4">
