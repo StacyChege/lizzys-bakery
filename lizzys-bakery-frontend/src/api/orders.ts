@@ -1,6 +1,7 @@
 import axiosInstance from './axiosInstance';
 import type {
   AdminDeliveryZone,
+  AdminStats,
   DeliveryZone,
   Order,
   OrderCreateInput,
@@ -58,4 +59,9 @@ export async function updateDeliveryZone(
 
 export async function deleteDeliveryZone(id: number): Promise<void> {
   await axiosInstance.delete(`/orders/admin/delivery-zones/${id}/`);
+}
+
+export async function fetchAdminStats(): Promise<AdminStats> {
+  const res = await axiosInstance.get<AdminStats>('/orders/admin/stats/');
+  return res.data;
 }

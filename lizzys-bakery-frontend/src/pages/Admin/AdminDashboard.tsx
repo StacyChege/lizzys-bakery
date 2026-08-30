@@ -1,21 +1,27 @@
-// Order inbox and broader sales stats are still future work — this covers
-// staff clock-in/stock/sales tracking and menu management (via /admin/menu).
+// Covers staff clock-in/stock/sales tracking, menu management (/admin/menu),
+// order management (/admin/orders), and basic sales stats.
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { fetchAdminSummary } from '../../api/staff';
+import { fetchAdminStats } from '../../api/orders';
 import type { AdminDailySummary } from '../../types/StaffShift';
+import type { AdminStats } from '../../types/Order';
 
 export default function AdminDashboard() {
   const { user } = useAuth();
   const [summary, setSummary] = useState<AdminDailySummary | null>(null);
+  const [stats, setStats] = useState<AdminStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    fetchAdminSummary()
-      .then(setSummary)
-      .catch(() => setError('Could not load today\'s summary.'))
+    Promise.all([fetchAdminSummary(), fetchAdminStats()])
+      .then(([s, st]) => {
+        setSummary(s);
+        setStats(st);
+      })
+      .catch(() => setError('Could not load dashboard data.'))
       .finally(() => setIsLoading(false));
   }, []);
 
@@ -43,15 +49,59 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <h2 className="font-semibold text-bakery-brown text-lg mb-4">
-        Today's Summary {summary && `— ${summary.date}`}
-      </h2>
-
       {isLoading ? (
         <p className="text-bakery-brown/60">Loading…</p>
       ) : error ? (
         <p className="text-red-600">{error}</p>
-      ) : !summary || summary.by_staff.length === 0 ? (
+      ) : (
+        <>
+          {stats && (
+            <div className="mb-8">
+              <h2 className="font-semibold text-bakery-brown text-lg mb-4">Stats</h2>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                <div className="bg-white rounded-xl shadow-sm p-4 border-t-4 border-bakery-pink-dark text-center">
+                  <p className="text-2xl font-bold text-bakery-pink-dark">{stats.orders_this_week}</p>
+                  <p className="text-xs text-bakery-brown/60">Orders this week</p>
+                </div>
+                <div className="bg-white rounded-xl shadow-sm p-4 border-t-4 border-bakery-brown text-center">
+                  <p className="text-2xl font-bold text-bakery-brown">{stats.orders_this_month}</p>
+                  <p className="text-xs text-bakery-brown/60">Orders this month</p>
+                </div>
+                <div className="bg-white rounded-xl shadow-sm p-4 border-t-4 border-bakery-pink-dark text-center">
+                  <p className="text-lg font-bold text-bakery-pink-dark">
+                    KES {stats.revenue_this_week.toLocaleString()}
+                  </p>
+                  <p className="text-xs text-bakery-brown/60">Revenue this week</p>
+                </div>
+                <div className="bg-white rounded-xl shadow-sm p-4 border-t-4 border-bakery-brown text-center">
+                  <p className="text-lg font-bold text-bakery-brown">
+                    KES {stats.revenue_this_month.toLocaleString()}
+                  </p>
+                  <p className="text-xs text-bakery-brown/60">Revenue this month</p>
+                </div>
+              </div>
+
+              {stats.most_ordered_items.length > 0 && (
+                <div className="bg-white rounded-xl shadow-sm p-5 border-t-4 border-bakery-pink">
+                  <h3 className="font-semibold text-bakery-brown mb-2 text-sm">Most Ordered</h3>
+                  <ul className="text-sm space-y-1">
+                    {stats.most_ordered_items.map((item) => (
+                      <li key={item.product_name} className="flex justify-between text-bakery-brown/80">
+                        <span>{item.product_name}</span>
+                        <span>{item.total_quantity} sold</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+
+          <h2 className="font-semibold text-bakery-brown text-lg mb-4">
+            Today's Summary {summary && `— ${summary.date}`}
+          </h2>
+
+      {!summary || summary.by_staff.length === 0 ? (
         <p className="text-bakery-brown/50">No staff shifts recorded yet today.</p>
       ) : (
         <>
@@ -94,6 +144,8 @@ export default function AdminDashboard() {
               {summary.grand_total_quantity} items — KES {summary.grand_total_revenue.toLocaleString()}
             </span>
           </div>
+        </>
+      )}
         </>
       )}
     </div>

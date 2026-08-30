@@ -65,6 +65,19 @@ export interface OrderCreateInput {
   items: OrderItemInput[];
 }
 
+export interface MostOrderedItem {
+  product_name: string;
+  total_quantity: number;
+}
+
+export interface AdminStats {
+  orders_this_week: number;
+  orders_this_month: number;
+  revenue_this_week: number;
+  revenue_this_month: number;
+  most_ordered_items: MostOrderedItem[];
+}
+
 export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
   PENDING_CONFIRMATION: 'Pending Confirmation',
   CONFIRMED: 'Confirmed',
