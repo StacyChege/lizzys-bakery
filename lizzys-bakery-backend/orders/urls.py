@@ -4,6 +4,7 @@ from .views import (
     AdminDeliveryZoneListCreateView,
     AdminOrderListView,
     AdminOrderStatusUpdateView,
+    AdminStatsView,
     DeliveryZoneListView,
     MyOrdersListView,
     OrderCreateView,
@@ -15,6 +16,7 @@ urlpatterns = [
     path('delivery-zones/', DeliveryZoneListView.as_view(), name='delivery-zone-list'),
 
     path('admin/', AdminOrderListView.as_view(), name='admin-order-list'),
+    path('admin/stats/', AdminStatsView.as_view(), name='admin-order-stats'),
     path('admin/<int:pk>/', AdminOrderStatusUpdateView.as_view(), name='admin-order-status-update'),
     path('admin/delivery-zones/', AdminDeliveryZoneListCreateView.as_view(), name='admin-delivery-zone-list-create'),
     path('admin/delivery-zones/<int:pk>/', AdminDeliveryZoneDetailView.as_view(), name='admin-delivery-zone-detail'),
