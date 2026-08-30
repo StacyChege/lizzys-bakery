@@ -13,6 +13,7 @@ import CartPage from './pages/Cart/CartPage';
 import CustomCakePage from './pages/CustomCake/CustomCakePage';
 import StaffPage from './pages/Staff/StaffPage';
 import MenuManagementPage from './pages/Admin/MenuManagementPage';
+import CheckoutPage from './pages/Checkout/CheckoutPage';
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
           <Route path="/menu" element={<MenuPage />} />
           <Route path="/product/:slug" element={<ProductDetailPage />} />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/custom-cake" element={<CustomCakePage />} />
           <Route path="/staff" element={<StaffPage />} />
         </Routes>

@@ -43,6 +43,7 @@ urlpatterns = [
     path('api/auth/', include('users.urls')),  # Include the users app URLs
     path('api/menu/', include('menu.urls')),  # Include the Menu app URLs
     path('api/staff/', include('staff.urls')),  # Staff clock-in/stock/sales tools
+    path('api/orders/', include('orders.urls')),  # Checkout, order history, admin order inbox
     # Not gated behind DEBUG — django.conf.urls.static.static() is a no-op
     # when DEBUG=False, which would silently 404 every uploaded product
     # photo in production. Fine for this project's scale; a real CDN/object

@@ -91,13 +91,12 @@ export default function CartPage() {
         </span>
       </div>
 
-      <button
-        disabled
-        title="Checkout is coming soon"
-        className="w-full mt-6 bg-bakery-pink-dark text-white font-semibold py-3 rounded-full opacity-50 cursor-not-allowed"
+      <Link
+        to="/checkout"
+        className="block text-center w-full mt-6 bg-bakery-pink-dark text-white font-semibold py-3 rounded-full hover:bg-bakery-brown transition-colors"
       >
-        Checkout (coming soon)
-      </button>
+        Checkout
+      </Link>
     </div>
     </div>
   );

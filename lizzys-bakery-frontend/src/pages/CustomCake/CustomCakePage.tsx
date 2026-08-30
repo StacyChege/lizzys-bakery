@@ -4,7 +4,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import toast from 'react-hot-toast';
 import { submitCustomCakeRequest } from '../../api/customCakes';
 import { isValidEmail } from '../../utils/validateForm';
-import { earliestCakeDate } from '../../utils/dateRules';
+import { earliestAllowedDate, formatDateForApi } from '../../utils/dateRules';
 
 export default function CustomCakePage() {
   const [name, setName] = useState('');
@@ -39,7 +39,7 @@ export default function CustomCakePage() {
         name,
         email,
         phone_number: phone,
-        date_needed: dateNeeded.toISOString().slice(0, 10),
+        date_needed: formatDateForApi(dateNeeded),
         description,
         budget: budget ? Number(budget) : undefined,
       });
@@ -113,7 +113,7 @@ export default function CustomCakePage() {
           <DatePicker
             selected={dateNeeded}
             onChange={(date: Date | null) => setDateNeeded(date)}
-            minDate={earliestCakeDate()}
+            minDate={earliestAllowedDate()}
             placeholderText="Date you need it by"
             className="w-full border border-bakery-pink/30 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-bakery-pink"
           />
