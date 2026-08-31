@@ -1,57 +1,46 @@
 import { Link } from 'react-router-dom';
-import { Cake, Cookie, Heart, Sparkles } from 'lucide-react';
+import { Cake, Heart, Sparkles } from 'lucide-react';
 import ScallopDivider from '../../components/ScallopDivider';
+import heroImage from '../../assets/hero-cake-coffee.jpg';
 
 export default function HomePage() {
   return (
     <div className="font-body">
       {/* ---------- HERO ---------- */}
-      <div className="relative bg-bakery-pink/15 px-4 pt-16 pb-10 md:pt-20">
-        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10 items-center">
-          {/* Text side */}
-          <div className="text-center md:text-left">
-            <p className="font-script text-2xl text-bakery-pink-dark mb-1">Freshly baked, daily</p>
-            <h1 className="font-script text-5xl sm:text-6xl text-bakery-pink-dark leading-tight mb-4">
+      <div
+        className="relative bg-cover bg-center px-4 pt-28 pb-20 md:pt-40 md:pb-28"
+        style={{ backgroundImage: `url(${heroImage})` }}
+      >
+        {/* Scrim: darkest at the left where the text sits, fading toward the photo on the right */}
+        <div className="absolute inset-0 bg-linear-to-r from-bakery-brown/90 via-bakery-brown/60 to-bakery-brown/20" />
+
+        <div className="relative max-w-5xl mx-auto">
+          <div className="text-center md:text-left max-w-lg mx-auto md:mx-0">
+            <p className="font-script text-2xl text-bakery-pink mb-1">Freshly baked, daily</p>
+            <h1 className="font-script text-5xl sm:text-6xl text-white leading-tight mb-4 drop-shadow-sm">
               Lizzy's Bakery
             </h1>
-            <p className="text-bakery-brown/70 max-w-sm mx-auto md:mx-0 mb-8">
-              Handmade cakes, cupcakes, and pastries — baked fresh for every occasion.
+            <p className="text-white/85 max-w-sm mx-auto md:mx-0 mb-8">
+              Handmade cakes, cupcakes, pastries, and coffee — baked and brewed fresh for every occasion.
             </p>
             <div className="flex flex-wrap gap-3 justify-center md:justify-start">
               <Link
                 to="/menu"
-                className="inline-block bg-bakery-pink-dark text-white font-semibold px-6 py-3 rounded-full hover:bg-bakery-brown transition-colors shadow-sm"
+                className="inline-block bg-bakery-pink-dark text-white font-semibold px-6 py-3 rounded-full hover:bg-bakery-pink transition-colors shadow-sm"
               >
                 View Our Menu
               </Link>
               <Link
                 to="/custom-cake"
-                className="inline-block bg-white text-bakery-pink-dark font-semibold px-6 py-3 rounded-full border-2 border-bakery-pink-dark/30 hover:border-bakery-pink-dark transition-colors"
+                className="inline-block bg-white/10 text-white font-semibold px-6 py-3 rounded-full border-2 border-white/60 backdrop-blur-sm hover:bg-white hover:text-bakery-pink-dark transition-colors"
               >
                 Design a Custom Cake
               </Link>
             </div>
           </div>
-
-          {/* Decorative side — a little stack of "cake tier" motifs, not a stock photo */}
-          <div className="relative h-64 md:h-80 hidden sm:block" aria-hidden="true">
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full bg-bakery-pink/30" />
-            <div className="absolute left-[38%] top-[55%] -translate-x-1/2 -translate-y-1/2 w-28 h-28 rounded-full bg-bakery-pink/50 flex items-center justify-center rotate-[-8deg]">
-              <Cake className="w-12 h-12 text-bakery-pink-dark" strokeWidth={1.5} />
-            </div>
-            <div className="absolute left-[68%] top-[30%] -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-white shadow-md flex items-center justify-center rotate-[10deg]">
-              <Cookie className="w-7 h-7 text-bakery-pink-dark" strokeWidth={1.5} />
-            </div>
-            <div className="absolute left-[25%] top-[25%] -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white shadow-md flex items-center justify-center rotate-[-6deg]">
-              <Heart className="w-5 h-5 text-bakery-pink-dark" strokeWidth={1.5} />
-            </div>
-            <div className="absolute left-[75%] top-[68%] -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-bakery-pink-dark/90 flex items-center justify-center rotate-[12deg]">
-              <Sparkles className="w-4 h-4 text-white" strokeWidth={1.5} />
-            </div>
-          </div>
         </div>
 
-        {/* Scallop "bites into" the pink hero's bottom edge — must overlap
+        {/* Scallop "bites into" the hero's bottom edge — must overlap
             it to work, since the wave's gaps are transparent, not colored */}
         <ScallopDivider fill="#FFFCF9" className="absolute bottom-0 left-0" />
       </div>
