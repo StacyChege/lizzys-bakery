@@ -26,8 +26,8 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(CustomCakeRequest)
 class CustomCakeRequestAdmin(admin.ModelAdmin):
-    list_display = ['name', 'date_needed', 'status', 'created_at']
+    list_display = ['name', 'date_needed', 'status', 'quoted_price', 'created_at']
     list_filter = ['status']
-    list_editable = ['status']  # triage requests without opening each one
+    list_editable = ['status', 'quoted_price']  # triage requests without opening each one
     search_fields = ['name', 'email', 'phone_number', 'description']
     readonly_fields = ['created_at']
