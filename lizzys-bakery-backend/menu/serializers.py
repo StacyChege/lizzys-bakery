@@ -58,13 +58,25 @@ class AdminProductSerializer(serializers.ModelSerializer):
     # Unlike ProductListSerializer/ProductDetailSerializer (read-oriented,
     # nested category object), this takes category as a plain FK id so the
     # admin form can just POST/PATCH a category id.
+    images = ProductImageSerializer(many=True, read_only=True)
+
     class Meta:
         model = Product
         fields = [
             'id', 'category', 'name', 'slug', 'description', 'base_price',
             'available_flavours', 'available_sizes', 'is_available', 'is_made_to_order',
+            'images',
         ]
         read_only_fields = ['slug']
+
+
+class AdminProductImageUploadSerializer(serializers.ModelSerializer):
+    # sort_order isn't taken from the client — the view appends new photos
+    # to the end of the product's existing gallery.
+    class Meta:
+        model = ProductImage
+        fields = ['id', 'image', 'sort_order']
+        read_only_fields = ['sort_order']
 
 
 class CustomCakeRequestSerializer(serializers.ModelSerializer):

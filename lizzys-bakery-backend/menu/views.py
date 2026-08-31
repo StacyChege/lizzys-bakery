@@ -1,11 +1,14 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import generics
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import Category, CustomCakeRequest, Product
+from .models import Category, CustomCakeRequest, Product, ProductImage
 from .permissions import IsBakeryAdmin
 from .serializers import (
     AdminCategorySerializer,
     AdminCustomCakeRequestSerializer,
+    AdminProductImageUploadSerializer,
     AdminProductSerializer,
     CategorySerializer,
     CustomCakeRequestSerializer,
@@ -40,9 +43,9 @@ class CustomCakeRequestCreateView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
 
-# --- Admin menu management (Django admin still handles image uploads and
-# available_sizes editing for now — this covers the fields the baker
-# changes day to day: name, price, description, flavours, availability) ---
+# --- Admin menu management (Django admin still handles available_sizes
+# editing for now — this covers the fields the baker changes day to day:
+# name, price, description, flavours, availability, photos) ---
 
 class AdminCategoryListCreateView(generics.ListCreateAPIView):
     # Unlike CategoryListView, not filtered — the baker needs to see/manage
@@ -69,6 +72,24 @@ class AdminProductListCreateView(generics.ListCreateAPIView):
 class AdminProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = AdminProductSerializer
+    permission_classes = [IsAuthenticated, IsBakeryAdmin]
+
+
+class AdminProductImageUploadView(generics.CreateAPIView):
+    # Nested under a product id: POST an 'image' file to add a photo to
+    # that product's gallery. New photos append after any existing ones.
+    serializer_class = AdminProductImageUploadSerializer
+    permission_classes = [IsAuthenticated, IsBakeryAdmin]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def perform_create(self, serializer):
+        product = get_object_or_404(Product, pk=self.kwargs['product_id'])
+        next_sort_order = product.images.count()
+        serializer.save(product=product, sort_order=next_sort_order)
+
+
+class AdminProductImageDeleteView(generics.DestroyAPIView):
+    queryset = ProductImage.objects.all()
     permission_classes = [IsAuthenticated, IsBakeryAdmin]
 
 

@@ -5,6 +5,8 @@ from .views import (
     AdminCustomCakeRequestListView,
     AdminCustomCakeRequestUpdateView,
     AdminProductDetailView,
+    AdminProductImageDeleteView,
+    AdminProductImageUploadView,
     AdminProductListCreateView,
     CategoryListView,
     CustomCakeRequestCreateView,
@@ -22,6 +24,16 @@ urlpatterns = [
     path('admin/categories/<int:pk>/', AdminCategoryDetailView.as_view(), name='admin-category-detail'),
     path('admin/products/', AdminProductListCreateView.as_view(), name='admin-product-list-create'),
     path('admin/products/<int:pk>/', AdminProductDetailView.as_view(), name='admin-product-detail'),
+    path(
+        'admin/products/<int:product_id>/images/',
+        AdminProductImageUploadView.as_view(),
+        name='admin-product-image-upload',
+    ),
+    path(
+        'admin/product-images/<int:pk>/',
+        AdminProductImageDeleteView.as_view(),
+        name='admin-product-image-delete',
+    ),
     path(
         'admin/custom-cake-requests/',
         AdminCustomCakeRequestListView.as_view(),
