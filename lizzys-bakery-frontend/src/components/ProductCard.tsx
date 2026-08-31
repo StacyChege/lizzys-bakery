@@ -1,5 +1,6 @@
 import type Product from '../types/Product';
 import { Link } from 'react-router-dom';
+import mediaUrl from '../utils/mediaUrl';
 
 interface ProductCardProps {
   product: Product;
@@ -24,7 +25,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       <div className="h-48 w-full bg-bakery-cream/40 flex items-center justify-center overflow-hidden">
         {product.main_image ? (
           <img
-            src={product.main_image}
+            src={mediaUrl(product.main_image) ?? undefined}
             alt={product.name}
             className="w-full h-full object-cover"
           />

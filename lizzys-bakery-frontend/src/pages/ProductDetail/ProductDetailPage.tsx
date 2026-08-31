@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { fetchProductDetail } from '../../api/products';
 import type { ProductDetail } from '../../types/Product';
 import { useCart } from '../../hooks/useCart';
+import mediaUrl from '../../utils/mediaUrl';
 
 export default function ProductDetailPage() {
   const { addItem } = useCart();
@@ -88,7 +89,7 @@ export default function ProductDetailPage() {
         <div className="aspect-square bg-bakery-pink/10 rounded-xl overflow-hidden flex items-center justify-center">
           {product.images.length > 0 ? (
             <img
-              src={product.images[activeImageIndex].image}
+              src={mediaUrl(product.images[activeImageIndex].image) ?? undefined}
               alt={product.name}
               className="w-full h-full object-cover"
             />
@@ -108,7 +109,7 @@ export default function ProductDetailPage() {
                   index === activeImageIndex ? 'border-bakery-pink' : 'border-transparent'
                 }`}
               >
-                <img src={img.image} alt="" className="w-full h-full object-cover" />
+                <img src={mediaUrl(img.image) ?? undefined} alt="" className="w-full h-full object-cover" />
               </button>
             ))}
           </div>

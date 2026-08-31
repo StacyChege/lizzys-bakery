@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../../hooks/useCart';
+import mediaUrl from '../../utils/mediaUrl';
 
 export default function CartPage() {
   const { items, totalPrice, updateQuantity, removeItem } = useCart();
@@ -36,7 +37,7 @@ export default function CartPage() {
             >
               <div className="w-20 h-20 rounded-lg bg-bakery-cream/60 flex items-center justify-center overflow-hidden shrink-0">
                 {item.image ? (
-                  <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                  <img src={mediaUrl(item.image) ?? undefined} alt={item.name} className="w-full h-full object-cover" />
                 ) : (
                   <span className="text-bakery-pink/40 text-xs text-center px-1">No Image</span>
                 )}
