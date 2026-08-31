@@ -9,9 +9,12 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
+  uploadProductImage,
+  deleteProductImage,
 } from '../../api/adminMenu';
 import type Category from '../../types/Category';
 import type AdminProduct from '../../types/AdminProduct';
+import mediaUrl from '../../utils/mediaUrl';
 
 function extractErrorMessage(err: unknown): string {
   if (typeof err === 'object' && err !== null && 'response' in err) {
@@ -56,6 +59,7 @@ export default function MenuManagementPage() {
 
   const [editingProductId, setEditingProductId] = useState<number | 'new' | null>(null);
   const [productForm, setProductForm] = useState<ProductFormState>(emptyProductForm);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   const loadAll = useCallback(() => {
     Promise.all([fetchAdminCategories(), fetchAdminProducts()])
@@ -149,6 +153,28 @@ export default function MenuManagementPage() {
     if (!confirm('Delete this product? This cannot be undone.')) return;
     try {
       await deleteProduct(id);
+      loadAll();
+    } catch (err) {
+      toast.error(extractErrorMessage(err));
+    }
+  }
+
+  async function handleUploadImage(productId: number, file: File) {
+    setIsUploadingImage(true);
+    try {
+      await uploadProductImage(productId, file);
+      loadAll();
+    } catch (err) {
+      toast.error(extractErrorMessage(err));
+    } finally {
+      setIsUploadingImage(false);
+    }
+  }
+
+  async function handleDeleteImage(imageId: number) {
+    if (!confirm('Remove this photo?')) return;
+    try {
+      await deleteProductImage(imageId);
       loadAll();
     } catch (err) {
       toast.error(extractErrorMessage(err));
@@ -311,8 +337,45 @@ export default function MenuManagementPage() {
                       Made to order
                     </label>
                   </div>
+                  {typeof editingProductId === 'number' ? (
+                    <div>
+                      <p className="text-sm font-medium text-bakery-brown mb-2">Photos</p>
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {products
+                          .find((p) => p.id === editingProductId)
+                          ?.images.map((img) => (
+                            <div key={img.id} className="relative w-16 h-16 rounded-lg overflow-hidden border border-bakery-pink/30 group">
+                              <img src={mediaUrl(img.image) ?? undefined} alt="" className="w-full h-full object-cover" />
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteImage(img.id)}
+                                className="absolute inset-0 bg-black/50 text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          ))}
+                      </div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        disabled={isUploadingImage}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleUploadImage(editingProductId, file);
+                          e.target.value = '';
+                        }}
+                        className="text-xs text-bakery-brown/70"
+                      />
+                      {isUploadingImage && <p className="text-xs text-bakery-brown/50 mt-1">Uploading…</p>}
+                    </div>
+                  ) : (
+                    <p className="text-xs text-bakery-brown/50">
+                      Save the product first, then edit it again to add photos.
+                    </p>
+                  )}
                   <p className="text-xs text-bakery-brown/50">
-                    Photos and size options are still managed in the Django admin for now.
+                    Size options are still managed in the Django admin for now.
                   </p>
                   <div className="flex gap-2">
                     <button

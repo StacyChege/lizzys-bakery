@@ -1,3 +1,9 @@
+export interface AdminProductImage {
+  id: number;
+  image: string;
+  sort_order: number;
+}
+
 // Matches AdminProductSerializer — category is a plain FK id here, unlike
 // the public Product/ProductDetail types which nest the category object/name.
 export default interface AdminProduct {
@@ -11,6 +17,7 @@ export default interface AdminProduct {
   available_sizes: { label: string; price_modifier: number }[];
   is_available: boolean;
   is_made_to_order: boolean;
+  images: AdminProductImage[];
 }
 
-export type AdminProductInput = Omit<AdminProduct, 'id' | 'slug'>;
+export type AdminProductInput = Omit<AdminProduct, 'id' | 'slug' | 'images'>;

@@ -1,7 +1,7 @@
 import axiosInstance from './axiosInstance';
 import type Category from '../types/Category';
 import type AdminProduct from '../types/AdminProduct';
-import type { AdminProductInput } from '../types/AdminProduct';
+import type { AdminProductImage, AdminProductInput } from '../types/AdminProduct';
 import type { AdminCustomCakeRequest, CustomCakeRequestStatus } from '../types/CustomCakeRequest';
 
 export async function fetchAdminCategories(): Promise<Category[]> {
@@ -38,6 +38,21 @@ export async function updateProduct(
 
 export async function deleteProduct(id: number): Promise<void> {
   await axiosInstance.delete(`/menu/admin/products/${id}/`);
+}
+
+export async function uploadProductImage(productId: number, file: File): Promise<AdminProductImage> {
+  const formData = new FormData();
+  formData.append('image', file);
+  const res = await axiosInstance.post<AdminProductImage>(
+    `/menu/admin/products/${productId}/images/`,
+    formData,
+    { headers: { 'Content-Type': 'multipart/form-data' } }
+  );
+  return res.data;
+}
+
+export async function deleteProductImage(imageId: number): Promise<void> {
+  await axiosInstance.delete(`/menu/admin/product-images/${imageId}/`);
 }
 
 export async function fetchAdminCustomCakeRequests(
