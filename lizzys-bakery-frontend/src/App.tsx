@@ -15,6 +15,7 @@ import StaffPage from './pages/Staff/StaffPage';
 import MenuManagementPage from './pages/Admin/MenuManagementPage';
 import CheckoutPage from './pages/Checkout/CheckoutPage';
 import OrdersPage from './pages/Admin/OrdersPage';
+import CustomCakeRequestsPage from './pages/Admin/CustomCakeRequestsPage';
 
 function App() {
   return (
@@ -58,6 +59,14 @@ function App() {
             element={
               <ProtectedRoute requiredRole="ADMIN">
                 <OrdersPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/custom-cake-requests"
+            element={
+              <ProtectedRoute requiredRole="ADMIN">
+                <CustomCakeRequestsPage />
               </ProtectedRoute>
             }
           />
