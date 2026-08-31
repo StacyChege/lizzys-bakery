@@ -112,7 +112,7 @@ export default function CheckoutPage() {
 
   if (placedOrder) {
     return (
-      <div className="bg-bakery-pink/10 min-h-[70vh] py-16 px-4">
+      <div className="min-h-[70vh] py-16 px-4">
         <div className="max-w-lg mx-auto text-center font-body">
           <p className="font-script text-4xl text-bakery-pink-dark mb-2">Order placed!</p>
           <p className="text-bakery-brown/70 mb-6">
@@ -149,7 +149,7 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <div className="bg-bakery-pink/10 min-h-[70vh] flex items-center px-4">
+      <div className="min-h-[70vh] flex items-center px-4">
         <div className="max-w-lg mx-auto text-center font-body">
           <p className="font-script text-3xl text-bakery-pink-dark mb-2">Nothing to check out</p>
           <p className="text-bakery-brown/60 mb-6">Your cart is empty — add something from the menu first.</p>
@@ -165,7 +165,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="bg-bakery-pink/10 min-h-screen py-10 px-4">
+    <div className="min-h-screen py-10 px-4">
       <div className="max-w-2xl mx-auto font-body">
         <h1 className="font-script text-4xl text-bakery-pink-dark mb-6">Checkout</h1>
 

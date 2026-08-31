@@ -18,7 +18,7 @@ export default function AccountPage() {
   }, []);
 
   return (
-    <div className="bg-bakery-pink/10 min-h-screen py-16 px-4">
+    <div className="min-h-screen py-16 px-4">
       <div className="max-w-2xl mx-auto font-body space-y-6">
         <div className="bg-white rounded-2xl shadow-sm p-8 border-t-4 border-bakery-pink-dark">
           <h1 className="font-script text-4xl text-bakery-pink-dark mb-4">My Account</h1>

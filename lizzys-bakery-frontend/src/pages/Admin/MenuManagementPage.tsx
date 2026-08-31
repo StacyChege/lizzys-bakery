@@ -167,7 +167,7 @@ export default function MenuManagementPage() {
   const categoryName = (id: number) => categories.find((c) => c.id === id)?.name ?? '—';
 
   return (
-    <div className="bg-bakery-pink/10 min-h-screen py-10 px-4">
+    <div className="min-h-screen py-10 px-4">
       <div className="max-w-4xl mx-auto font-body">
         <div className="flex items-center justify-between mb-8">
           <h1 className="font-script text-4xl text-bakery-pink-dark">Menu Management</h1>

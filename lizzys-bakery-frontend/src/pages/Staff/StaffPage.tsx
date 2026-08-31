@@ -129,7 +129,7 @@ export default function StaffPage() {
   // --- Post-clock-out summary screen ---
   if (finalSummary) {
     return (
-      <div className="bg-bakery-pink/10 min-h-[70vh] py-16 px-4">
+      <div className="min-h-[70vh] py-16 px-4">
         <div className="max-w-lg mx-auto text-center font-body">
         <p className="font-script text-3xl text-bakery-pink-dark mb-2">Clocked out</p>
         <p className="text-bakery-brown/70 mb-6">
@@ -167,7 +167,7 @@ export default function StaffPage() {
   // --- Clock-in screen ---
   if (!token) {
     return (
-      <div className="bg-bakery-pink/10 min-h-[70vh] flex items-center px-4 py-16">
+      <div className="min-h-[70vh] flex items-center px-4 py-16">
       <div className="max-w-sm mx-auto w-full">
         <h1 className="font-script text-4xl text-bakery-pink-dark text-center mb-6">
           Staff Clock In
@@ -215,7 +215,7 @@ export default function StaffPage() {
   const stockedProductIds = new Set(todayStock.map((s) => s.product));
 
   return (
-    <div className="bg-bakery-pink/10 min-h-screen py-10 px-4">
+    <div className="min-h-screen py-10 px-4">
     <div className="max-w-2xl mx-auto font-body">
       <div className="flex items-center justify-between mb-8">
         <h1 className="font-script text-3xl text-bakery-pink-dark">Hi, {staffName}</h1>

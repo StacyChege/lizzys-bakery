@@ -58,7 +58,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-[70vh] flex items-center justify-center bg-bakery-pink/10 px-4 py-12">
+    <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
       <div className="relative bg-white rounded-3xl shadow-lg p-8 pt-10 w-full max-w-sm border-2 border-dashed border-bakery-pink/40">
         <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-bakery-pink-dark shadow-md" />
 

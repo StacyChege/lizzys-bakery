@@ -53,7 +53,7 @@ export default function CustomCakePage() {
 
   if (submitted) {
     return (
-      <div className="bg-bakery-pink/10 py-20 px-4">
+      <div className="py-20 px-4">
         <div className="max-w-lg mx-auto text-center font-body">
           <p className="font-script text-4xl text-bakery-pink-dark mb-3">Request sent!</p>
           <p className="text-bakery-brown/70">
@@ -65,7 +65,7 @@ export default function CustomCakePage() {
   }
 
   return (
-    <div className="bg-bakery-pink/10 py-12 px-4">
+    <div className="py-12 px-4">
       <div className="relative max-w-xl mx-auto bg-white rounded-3xl shadow-lg p-8 pt-10 border-2 border-dashed border-bakery-pink/40">
         <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-bakery-pink-dark shadow-md" />
 

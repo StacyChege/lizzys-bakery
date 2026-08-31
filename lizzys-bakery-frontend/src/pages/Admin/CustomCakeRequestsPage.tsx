@@ -65,7 +65,7 @@ export default function CustomCakeRequestsPage() {
   }
 
   return (
-    <div className="bg-bakery-pink/10 min-h-screen py-10 px-4">
+    <div className="min-h-screen py-10 px-4">
       <div className="max-w-3xl mx-auto font-body">
         <div className="flex items-center justify-between mb-8">
           <h1 className="font-script text-4xl text-bakery-pink-dark">Custom Cake Requests</h1>

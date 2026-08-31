@@ -6,7 +6,7 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="bg-bakery-pink/10 min-h-[70vh] flex items-center px-4">
+      <div className="min-h-[70vh] flex items-center px-4">
         <div className="max-w-2xl mx-auto text-center font-body">
           <p className="font-script text-3xl text-bakery-pink-dark mb-2">Your cart is empty</p>
           <p className="text-bakery-brown/60 mb-6">Looks like you haven't added anything yet.</p>
@@ -22,7 +22,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="bg-bakery-pink/10 min-h-screen py-10 px-4">
+    <div className="min-h-screen py-10 px-4">
     <div className="max-w-3xl mx-auto font-body">
       <h1 className="font-script text-4xl text-bakery-pink-dark mb-6">Your Cart</h1>
 
