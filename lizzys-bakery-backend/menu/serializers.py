@@ -84,3 +84,16 @@ class CustomCakeRequestSerializer(serializers.ModelSerializer):
                 f'earliest available date is {earliest.isoformat()}.'
             )
         return value
+
+
+class AdminCustomCakeRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomCakeRequest
+        fields = [
+            'id', 'name', 'email', 'phone_number', 'date_needed',
+            'description', 'budget', 'status', 'quoted_price', 'created_at',
+        ]
+        read_only_fields = [
+            'id', 'name', 'email', 'phone_number', 'date_needed',
+            'description', 'budget', 'created_at',
+        ]

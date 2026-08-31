@@ -5,6 +5,7 @@ from .models import Category, CustomCakeRequest, Product
 from .permissions import IsBakeryAdmin
 from .serializers import (
     AdminCategorySerializer,
+    AdminCustomCakeRequestSerializer,
     AdminProductSerializer,
     CategorySerializer,
     CustomCakeRequestSerializer,
@@ -68,4 +69,21 @@ class AdminProductListCreateView(generics.ListCreateAPIView):
 class AdminProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = AdminProductSerializer
+    permission_classes = [IsAuthenticated, IsBakeryAdmin]
+
+
+class AdminCustomCakeRequestListView(generics.ListAPIView):
+    queryset = CustomCakeRequest.objects.all()
+    serializer_class = AdminCustomCakeRequestSerializer
+    permission_classes = [IsAuthenticated, IsBakeryAdmin]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['status']
+
+
+class AdminCustomCakeRequestUpdateView(generics.UpdateAPIView):
+    # Only status/quoted_price are writable (enforced by the serializer's
+    # read_only_fields) — the baker triages and quotes, doesn't edit what
+    # the customer actually asked for.
+    queryset = CustomCakeRequest.objects.all()
+    serializer_class = AdminCustomCakeRequestSerializer
     permission_classes = [IsAuthenticated, IsBakeryAdmin]

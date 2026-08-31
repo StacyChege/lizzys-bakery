@@ -2,6 +2,8 @@ from django.urls import path
 from .views import (
     AdminCategoryDetailView,
     AdminCategoryListCreateView,
+    AdminCustomCakeRequestListView,
+    AdminCustomCakeRequestUpdateView,
     AdminProductDetailView,
     AdminProductListCreateView,
     CategoryListView,
@@ -20,4 +22,14 @@ urlpatterns = [
     path('admin/categories/<int:pk>/', AdminCategoryDetailView.as_view(), name='admin-category-detail'),
     path('admin/products/', AdminProductListCreateView.as_view(), name='admin-product-list-create'),
     path('admin/products/<int:pk>/', AdminProductDetailView.as_view(), name='admin-product-detail'),
+    path(
+        'admin/custom-cake-requests/',
+        AdminCustomCakeRequestListView.as_view(),
+        name='admin-custom-cake-request-list',
+    ),
+    path(
+        'admin/custom-cake-requests/<int:pk>/',
+        AdminCustomCakeRequestUpdateView.as_view(),
+        name='admin-custom-cake-request-update',
+    ),
 ]
