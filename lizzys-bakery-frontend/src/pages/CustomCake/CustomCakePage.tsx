@@ -1,11 +1,12 @@
-import { useState, type FormEvent } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import toast from 'react-hot-toast';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { submitCustomCakeRequest } from '../../api/customCakes';
+import { fetchBlockedDates } from '../../api/orders';
 import { isValidEmail } from '../../utils/validateForm';
-import { earliestAllowedDate, formatDateForApi } from '../../utils/dateRules';
+import { earliestAllowedDate, formatDateForApi, parseApiDate } from '../../utils/dateRules';
 
 const TOTAL_STEPS = 7;
 const MAX_REFERENCE_IMAGES = 3;
@@ -76,6 +77,13 @@ export default function CustomCakePage() {
   const [specialNotes, setSpecialNotes] = useState('');
   const [budget, setBudget] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [blockedDates, setBlockedDates] = useState<Date[]>([]);
+
+  useEffect(() => {
+    fetchBlockedDates()
+      .then((dates) => setBlockedDates(dates.map((d) => parseApiDate(d.date))))
+      .catch(() => {});
+  }, []);
 
   function canProceed(): boolean {
     switch (step) {
@@ -480,6 +488,7 @@ export default function CustomCakePage() {
                   selected={dateNeeded}
                   onChange={(date: Date | null) => setDateNeeded(date)}
                   minDate={earliestAllowedDate()}
+                  excludeDates={blockedDates}
                   placeholderText="Date you need it by"
                   className="w-full border border-bakery-pink/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-bakery-pink"
                 />
