@@ -1,9 +1,10 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import Category, CustomCakeRequest, Product, ProductImage
+from .models import Category, CustomCakeReferenceImage, CustomCakeRequest, Product, ProductImage
 from .permissions import IsBakeryAdmin
 from .serializers import (
     AdminCategorySerializer,
@@ -16,6 +17,8 @@ from .serializers import (
     ProductDetailSerializer,
 )
 from .filters import ProductFilter
+
+MAX_REFERENCE_IMAGES = 3
 
 
 class CategoryListView(generics.ListAPIView):
@@ -37,10 +40,25 @@ class ProductDetailView(generics.RetrieveAPIView):
 
 
 class CustomCakeRequestCreateView(generics.CreateAPIView):
-    # Public — a customer doesn't need an account to ask for a custom cake
+    # Public — a customer doesn't need an account to ask for a custom cake.
+    # Reference photos ride along as extra files under the 'reference_images'
+    # form key rather than as a serializer field — DRF can't bind a list of
+    # files to a nested model from multipart data in a single ModelSerializer.
     queryset = CustomCakeRequest.objects.all()
     serializer_class = CustomCakeRequestSerializer
     permission_classes = [AllowAny]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        instance = serializer.save()
+
+        for image in request.FILES.getlist('reference_images')[:MAX_REFERENCE_IMAGES]:
+            CustomCakeReferenceImage.objects.create(request=instance, image=image)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 # --- Admin menu management (Django admin still handles available_sizes
