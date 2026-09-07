@@ -1,10 +1,16 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .serializers import RegisterSerializer, UserSerializer
+from .emails import send_password_reset_email
+from .serializers import (
+    PasswordResetConfirmSerializer,
+    PasswordResetRequestSerializer,
+    RegisterSerializer,
+    UserSerializer,
+)
 
 User = get_user_model()
 
@@ -45,3 +51,35 @@ class UserProfileView(generics.RetrieveAPIView):
     def get_object(self):
         # Returns the logged-in user making the request
         return self.request.user
+
+
+# 5. Password Reset (PRD 2.1: link expires after 30 minutes — see
+# PASSWORD_RESET_TIMEOUT in settings.py)
+class PasswordResetRequestView(generics.GenericAPIView):
+    serializer_class = PasswordResetRequestSerializer
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Always return the same response whether or not the email exists —
+        # otherwise this endpoint becomes a way to check who has an account.
+        try:
+            user = User.objects.get(email=serializer.validated_data['email'])
+            send_password_reset_email(user)
+        except User.DoesNotExist:
+            pass
+
+        return Response({'message': 'If an account exists for that email, a reset link has been sent.'})
+
+
+class PasswordResetConfirmView(generics.GenericAPIView):
+    serializer_class = PasswordResetConfirmSerializer
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'message': 'Your password has been reset. You can now log in.'})
