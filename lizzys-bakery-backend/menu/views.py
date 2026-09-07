@@ -16,6 +16,7 @@ from .serializers import (
     ProductListSerializer,
     ProductDetailSerializer,
 )
+from .emails import send_custom_cake_confirmation_email, send_custom_cake_status_email
 from .filters import ProductFilter
 
 MAX_REFERENCE_IMAGES = 3
@@ -56,6 +57,8 @@ class CustomCakeRequestCreateView(generics.CreateAPIView):
 
         for image in request.FILES.getlist('reference_images')[:MAX_REFERENCE_IMAGES]:
             CustomCakeReferenceImage.objects.create(request=instance, image=image)
+
+        send_custom_cake_confirmation_email(instance)
 
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
@@ -126,3 +129,11 @@ class AdminCustomCakeRequestUpdateView(generics.UpdateAPIView):
     queryset = CustomCakeRequest.objects.all()
     serializer_class = AdminCustomCakeRequestSerializer
     permission_classes = [IsAuthenticated, IsBakeryAdmin]
+
+    def update(self, request, *args, **kwargs):
+        previous_status = self.get_object().status
+        response = super().update(request, *args, **kwargs)
+        instance = self.get_object()
+        if instance.status != previous_status:
+            send_custom_cake_status_email(instance)
+        return response
