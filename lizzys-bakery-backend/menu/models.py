@@ -69,6 +69,12 @@ class CustomCakeRequest(models.Model):
     # A baker-reviewed inquiry, not an instant order — no price/availability
     # exists until Lizzy looks at it, so this is deliberately just contact
     # details + what they want, triaged in the admin.
+    #
+    # occasion/flavour/filling/frosting_style are plain CharFields rather than
+    # Django `choices=` — the builder UI offers a preset list plus a
+    # free-text "Other", and whatever the customer settles on is stored
+    # as-is. colour_theme/toppings are comma-joined strings for the same
+    # reason multipart form data doesn't round-trip JSON lists cleanly.
     PENDING = 'PENDING'
     REVIEWED = 'REVIEWED'
     QUOTED = 'QUOTED'
@@ -86,8 +92,18 @@ class CustomCakeRequest(models.Model):
     email = models.EmailField()
     phone_number = models.CharField(max_length=20)
     date_needed = models.DateField()
-    description = models.TextField()  # flavour, size, theme, occasion — free text from the customer
     budget = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+
+    occasion = models.CharField(max_length=100, blank=True)
+    tier_count = models.PositiveSmallIntegerField(default=1)
+    servings = models.PositiveIntegerField(blank=True, null=True)
+    flavour = models.CharField(max_length=100, blank=True)
+    filling = models.CharField(max_length=100, blank=True)
+    frosting_style = models.CharField(max_length=100, blank=True)
+    colour_theme = models.CharField(max_length=255, blank=True)
+    toppings = models.CharField(max_length=255, blank=True)
+    custom_message = models.CharField(max_length=255, blank=True)
+    special_notes = models.TextField(blank=True)  # free-text notes/allergies from step 7
 
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default=PENDING)
     quoted_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
@@ -98,3 +114,14 @@ class CustomCakeRequest(models.Model):
 
     def __str__(self):
         return f"{self.name} — {self.date_needed}"
+
+
+class CustomCakeReferenceImage(models.Model):
+    # Up to 3 per request (enforced in the view, not the DB) — inspiration
+    # photos the customer uploads so the baker understands the desired look.
+    request = models.ForeignKey(CustomCakeRequest, on_delete=models.CASCADE, related_name='reference_images')
+    image = models.ImageField(upload_to='custom_cake_references/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Reference image for {self.request.name}'
