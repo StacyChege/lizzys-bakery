@@ -4,8 +4,8 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useCart } from '../../hooks/useCart';
 import { useAuth } from '../../hooks/useAuth';
-import { fetchDeliveryZones, submitOrder } from '../../api/orders';
-import { earliestAllowedDate, formatDateForApi } from '../../utils/dateRules';
+import { fetchBlockedDates, fetchDeliveryZones, submitOrder } from '../../api/orders';
+import { earliestAllowedDate, formatDateForApi, parseApiDate } from '../../utils/dateRules';
 import { isValidEmail } from '../../utils/validateForm';
 import type { DeliveryZone, FulfilmentMethod, Order } from '../../types/Order';
 
@@ -39,9 +39,13 @@ export default function CheckoutPage() {
   const [submitError, setSubmitError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [placedOrder, setPlacedOrder] = useState<Order | null>(null);
+  const [blockedDates, setBlockedDates] = useState<Date[]>([]);
 
   useEffect(() => {
     fetchDeliveryZones().then(setDeliveryZones).catch(() => {});
+    fetchBlockedDates()
+      .then((dates) => setBlockedDates(dates.map((d) => parseApiDate(d.date))))
+      .catch(() => {});
   }, []);
 
   // AuthContext resolves the logged-in user asynchronously, so it may not
@@ -210,6 +214,7 @@ export default function CheckoutPage() {
                 selected={dateNeeded}
                 onChange={(date: Date | null) => setDateNeeded(date)}
                 minDate={earliestAllowedDate()}
+                excludeDates={blockedDates}
                 placeholderText="Date you need it by"
                 className="w-full border border-bakery-pink/30 rounded-lg px-3 py-2 text-sm"
               />
