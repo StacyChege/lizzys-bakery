@@ -1,5 +1,7 @@
-import { Phone, MapPin } from 'lucide-react';
+import { Phone, MapPin, MessageCircle } from 'lucide-react';
 import ScallopDivider from './ScallopDivider';
+
+const WHATSAPP_NUMBER = '254725941831'; // 0725 941 831 in international format, no leading 0
 
 export default function Footer() {
   return (
@@ -20,8 +22,16 @@ export default function Footer() {
             <Phone className="w-4 h-4" /> 0725 941 831
           </p>
           <p className="flex items-center gap-2">
-            <MapPin className="w-4 h-4" /> [Bakery address here]
+            <MapPin className="w-4 h-4" /> Kikuyu, Kenya
           </p>
+          <a
+            href={`https://wa.me/${WHATSAPP_NUMBER}`}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-2 text-bakery-pink hover:text-bakery-cream transition-colors w-fit"
+          >
+            <MessageCircle className="w-4 h-4" /> WhatsApp Us
+          </a>
         </div>
 
         {/* Column 3: Crucial policy guidelines to prevent late-notice orders */}
