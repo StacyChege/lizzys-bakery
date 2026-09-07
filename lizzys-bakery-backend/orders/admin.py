@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import DeliveryZone, Order, OrderItem
+from .models import BlockedDate, DeliveryZone, Order, OrderItem
 
 
 class OrderItemInline(admin.TabularInline):
@@ -23,3 +23,10 @@ class OrderAdmin(admin.ModelAdmin):
 class DeliveryZoneAdmin(admin.ModelAdmin):
     list_display = ['name', 'fee', 'is_active']
     list_editable = ['fee', 'is_active']
+
+
+@admin.register(BlockedDate)
+class BlockedDateAdmin(admin.ModelAdmin):
+    list_display = ['date', 'reason', 'created_at']
+    list_editable = ['reason']
+    readonly_fields = ['created_at']
