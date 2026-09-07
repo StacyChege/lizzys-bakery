@@ -78,6 +78,23 @@ export interface AdminStats {
   most_ordered_items: MostOrderedItem[];
 }
 
+export interface BlockedDate {
+  date: string;
+}
+
+export interface AdminBlockedDate {
+  id: number;
+  date: string;
+  reason: string;
+  created_at: string;
+}
+
+export interface UpcomingBooking {
+  date: string;
+  order_count: number;
+  is_blocked: boolean;
+}
+
 export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
   PENDING_CONFIRMATION: 'Pending Confirmation',
   CONFIRMED: 'Confirmed',
