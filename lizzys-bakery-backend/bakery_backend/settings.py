@@ -200,6 +200,14 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default="Lizzy's Bakery <noreply@lizzysbakery.com>")
 
+# Used to build the password reset link emailed to the user (users/emails.py)
+# — must point at the real frontend domain in production.
+FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:5173')
+
+# PRD 2.1: reset links expire after 30 minutes. Applies to Django's
+# default_token_generator, used by users/serializers.py.
+PASSWORD_RESET_TIMEOUT = 60 * 30
+
 
 # CORS Configurations
 CORS_ALLOWED_ORIGINS = config(
