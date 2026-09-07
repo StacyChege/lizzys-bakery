@@ -5,9 +5,17 @@ from django.utils import timezone
 from rest_framework import serializers
 
 from menu.models import Product
-from .models import DeliveryZone, Order, OrderItem
+from .models import BlockedDate, DeliveryZone, Order, OrderItem
 
 MIN_LEAD_DAYS = 5
+
+
+def validate_not_blocked(value):
+    if BlockedDate.objects.filter(date=value).exists():
+        raise serializers.ValidationError(
+            "That date isn't available — please pick a different one."
+        )
+    return value
 
 
 class DeliveryZoneSerializer(serializers.ModelSerializer):
@@ -20,6 +28,21 @@ class AdminDeliveryZoneSerializer(serializers.ModelSerializer):
     class Meta:
         model = DeliveryZone
         fields = ['id', 'name', 'fee', 'is_active']
+
+
+class BlockedDateSerializer(serializers.ModelSerializer):
+    # Public, read-only — the date pickers use this to grey out unavailable
+    # dates. No reason exposed here; that's an internal admin detail.
+    class Meta:
+        model = BlockedDate
+        fields = ['date']
+
+
+class AdminBlockedDateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BlockedDate
+        fields = ['id', 'date', 'reason', 'created_at']
+        read_only_fields = ['created_at']
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
@@ -72,7 +95,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
                 f'Orders need at least {MIN_LEAD_DAYS} days notice — '
                 f'earliest available date is {earliest.isoformat()}.'
             )
-        return value
+        return validate_not_blocked(value)
 
     def validate(self, attrs):
         if not attrs.get('items'):
