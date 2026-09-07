@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django_filters.rest_framework import DjangoFilterBackend
 
+from .emails import send_order_confirmation_email, send_order_status_email
 from .models import DeliveryZone, Order, OrderItem
 from .permissions import IsBakeryAdmin
 from .serializers import (
@@ -33,6 +34,10 @@ class OrderCreateView(generics.CreateAPIView):
     serializer_class = OrderCreateSerializer
     permission_classes = [AllowAny]
 
+    def perform_create(self, serializer):
+        serializer.save()
+        send_order_confirmation_email(serializer.instance)
+
 
 class MyOrdersListView(generics.ListAPIView):
     serializer_class = OrderSerializer
@@ -56,9 +61,12 @@ class AdminOrderStatusUpdateView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated, IsBakeryAdmin]
 
     def update(self, request, *args, **kwargs):
+        previous_status = self.get_object().status
         # After saving, hand back the full order shape, not just {"status": ...}
         response = super().update(request, *args, **kwargs)
         instance = self.get_object()
+        if instance.status != previous_status:
+            send_order_status_email(instance)
         response.data = OrderSerializer(instance).data
         return response
 
