@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, CustomCakeRequest, Product, ProductImage
+from .models import Category, CustomCakeReferenceImage, CustomCakeRequest, Product, ProductImage
 
 
 class ProductImageInline(admin.TabularInline):
@@ -7,6 +7,12 @@ class ProductImageInline(admin.TabularInline):
     # instead of managing ProductImage as a separate admin section
     model = ProductImage
     extra = 1
+
+
+class CustomCakeReferenceImageInline(admin.TabularInline):
+    model = CustomCakeReferenceImage
+    extra = 0
+    readonly_fields = ['uploaded_at']
 
 
 @admin.register(Category)
@@ -26,8 +32,9 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(CustomCakeRequest)
 class CustomCakeRequestAdmin(admin.ModelAdmin):
-    list_display = ['name', 'date_needed', 'status', 'quoted_price', 'created_at']
-    list_filter = ['status']
+    list_display = ['name', 'occasion', 'date_needed', 'status', 'quoted_price', 'created_at']
+    list_filter = ['status', 'occasion']
     list_editable = ['status', 'quoted_price']  # triage requests without opening each one
-    search_fields = ['name', 'email', 'phone_number', 'description']
+    search_fields = ['name', 'email', 'phone_number', 'special_notes']
     readonly_fields = ['created_at']
+    inlines = [CustomCakeReferenceImageInline]
