@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { fetchAdminCustomCakeRequests, updateCustomCakeRequest } from '../../api/adminMenu';
 import { CUSTOM_CAKE_STATUS_LABELS } from '../../types/CustomCakeRequest';
 import type { AdminCustomCakeRequest, CustomCakeRequestStatus } from '../../types/CustomCakeRequest';
+import mediaUrl from '../../utils/mediaUrl';
 
 function extractErrorMessage(err: unknown): string {
   if (typeof err === 'object' && err !== null && 'response' in err) {
@@ -118,7 +119,31 @@ export default function CustomCakeRequestsPage() {
                       </select>
                     </div>
 
-                    <p className="text-sm text-bakery-brown/80 mb-2">{req.description}</p>
+                    <div className="grid sm:grid-cols-2 gap-x-4 gap-y-1 text-sm text-bakery-brown/80 mb-3">
+                      {req.occasion && <p><span className="text-bakery-brown/50">Occasion:</span> {req.occasion}</p>}
+                      <p><span className="text-bakery-brown/50">Tiers:</span> {req.tier_count}{req.servings ? ` · ~${req.servings} servings` : ''}</p>
+                      {req.flavour && <p><span className="text-bakery-brown/50">Flavour:</span> {req.flavour}</p>}
+                      {req.filling && <p><span className="text-bakery-brown/50">Filling:</span> {req.filling}</p>}
+                      {req.frosting_style && <p><span className="text-bakery-brown/50">Frosting:</span> {req.frosting_style}</p>}
+                      {req.colour_theme && <p><span className="text-bakery-brown/50">Colours:</span> {req.colour_theme}</p>}
+                      {req.toppings && <p className="sm:col-span-2"><span className="text-bakery-brown/50">Toppings:</span> {req.toppings}</p>}
+                      {req.custom_message && <p className="sm:col-span-2"><span className="text-bakery-brown/50">Cake message:</span> "{req.custom_message}"</p>}
+                      {req.special_notes && <p className="sm:col-span-2"><span className="text-bakery-brown/50">Notes:</span> {req.special_notes}</p>}
+                    </div>
+
+                    {req.reference_images.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {req.reference_images.map((img) => (
+                          <a key={img.id} href={mediaUrl(img.image) ?? '#'} target="_blank" rel="noreferrer">
+                            <img
+                              src={mediaUrl(img.image) ?? undefined}
+                              alt="Reference"
+                              className="w-16 h-16 rounded-lg object-cover border border-bakery-pink/30"
+                            />
+                          </a>
+                        ))}
+                      </div>
+                    )}
 
                     <div className="flex flex-wrap justify-between text-xs text-bakery-brown/60 mb-3">
                       <span>Needed by {req.date_needed}</span>
