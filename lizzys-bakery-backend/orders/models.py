@@ -14,6 +14,21 @@ class DeliveryZone(models.Model):
         return f'{self.name} (KES {self.fee})'
 
 
+class BlockedDate(models.Model):
+    # The baker judges "fully booked" herself from the upcoming-bookings
+    # count (see AdminUpcomingBookingsView) and blocks the date manually —
+    # there's no automatic numeric cap, matching the PRD's data model.
+    date = models.DateField(unique=True)
+    reason = models.CharField(max_length=200, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['date']
+
+    def __str__(self):
+        return f'{self.date} — {self.reason or "Blocked"}'
+
+
 class Order(models.Model):
     PENDING_CONFIRMATION = 'PENDING_CONFIRMATION'
     CONFIRMED = 'CONFIRMED'
