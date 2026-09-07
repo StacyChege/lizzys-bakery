@@ -1,15 +1,23 @@
 import axiosInstance from './axiosInstance';
 import type {
+  AdminBlockedDate,
   AdminDeliveryZone,
   AdminStats,
+  BlockedDate,
   DeliveryZone,
   Order,
   OrderCreateInput,
   OrderStatus,
+  UpcomingBooking,
 } from '../types/Order';
 
 export async function fetchDeliveryZones(): Promise<DeliveryZone[]> {
   const res = await axiosInstance.get<DeliveryZone[]>('/orders/delivery-zones/');
+  return res.data;
+}
+
+export async function fetchBlockedDates(): Promise<BlockedDate[]> {
+  const res = await axiosInstance.get<BlockedDate[]>('/orders/blocked-dates/');
   return res.data;
 }
 
@@ -64,4 +72,23 @@ export async function deleteDeliveryZone(id: number): Promise<void> {
 export async function fetchAdminStats(): Promise<AdminStats> {
   const res = await axiosInstance.get<AdminStats>('/orders/admin/stats/');
   return res.data;
+}
+
+export async function fetchUpcomingBookings(): Promise<UpcomingBooking[]> {
+  const res = await axiosInstance.get<UpcomingBooking[]>('/orders/admin/upcoming-bookings/');
+  return res.data;
+}
+
+export async function fetchAdminBlockedDates(): Promise<AdminBlockedDate[]> {
+  const res = await axiosInstance.get<AdminBlockedDate[]>('/orders/admin/blocked-dates/');
+  return res.data;
+}
+
+export async function createBlockedDate(date: string, reason: string): Promise<AdminBlockedDate> {
+  const res = await axiosInstance.post<AdminBlockedDate>('/orders/admin/blocked-dates/', { date, reason });
+  return res.data;
+}
+
+export async function deleteBlockedDate(id: number): Promise<void> {
+  await axiosInstance.delete(`/orders/admin/blocked-dates/${id}/`);
 }
