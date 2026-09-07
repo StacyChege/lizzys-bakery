@@ -7,9 +7,19 @@ import {
   fetchAdminDeliveryZones,
   createDeliveryZone,
   deleteDeliveryZone,
+  fetchUpcomingBookings,
+  fetchAdminBlockedDates,
+  createBlockedDate,
+  deleteBlockedDate,
 } from '../../api/orders';
 import { ORDER_STATUS_LABELS } from '../../types/Order';
-import type { AdminDeliveryZone, Order, OrderStatus } from '../../types/Order';
+import type {
+  AdminBlockedDate,
+  AdminDeliveryZone,
+  Order,
+  OrderStatus,
+  UpcomingBooking,
+} from '../../types/Order';
 
 function extractErrorMessage(err: unknown): string {
   if (typeof err === 'object' && err !== null && 'response' in err) {
@@ -34,6 +44,11 @@ export default function OrdersPage() {
   const [newZoneName, setNewZoneName] = useState('');
   const [newZoneFee, setNewZoneFee] = useState('');
 
+  const [upcomingBookings, setUpcomingBookings] = useState<UpcomingBooking[]>([]);
+  const [blockedDates, setBlockedDates] = useState<AdminBlockedDate[]>([]);
+  const [newBlockDate, setNewBlockDate] = useState('');
+  const [newBlockReason, setNewBlockReason] = useState('');
+
   const loadOrders = useCallback((status: OrderStatus | '') => {
     fetchAdminOrders(status || undefined)
       .then(setOrders)
@@ -44,6 +59,11 @@ export default function OrdersPage() {
     fetchAdminDeliveryZones().then(setZones).catch(() => {});
   }, []);
 
+  const loadCalendar = useCallback(() => {
+    fetchUpcomingBookings().then(setUpcomingBookings).catch(() => {});
+    fetchAdminBlockedDates().then(setBlockedDates).catch(() => {});
+  }, []);
+
   useEffect(() => {
     Promise.all([fetchAdminOrders(), fetchAdminDeliveryZones()])
       .then(([o, z]) => {
@@ -52,7 +72,8 @@ export default function OrdersPage() {
       })
       .catch(() => setError('Could not load orders.'))
       .finally(() => setIsLoading(false));
-  }, []);
+    loadCalendar();
+  }, [loadCalendar]);
 
   function handleFilterChange(status: OrderStatus | '') {
     setStatusFilter(status);
@@ -86,6 +107,32 @@ export default function OrdersPage() {
     try {
       await deleteDeliveryZone(id);
       loadZones();
+    } catch (err) {
+      toast.error(extractErrorMessage(err));
+    }
+  }
+
+  async function handleBlockDate(date: string, reason: string) {
+    try {
+      await createBlockedDate(date, reason);
+      loadCalendar();
+    } catch (err) {
+      toast.error(extractErrorMessage(err));
+    }
+  }
+
+  async function handleAddBlockedDate(e: React.FormEvent) {
+    e.preventDefault();
+    if (!newBlockDate) return;
+    await handleBlockDate(newBlockDate, newBlockReason);
+    setNewBlockDate('');
+    setNewBlockReason('');
+  }
+
+  async function handleUnblockDate(id: number) {
+    try {
+      await deleteBlockedDate(id);
+      loadCalendar();
     } catch (err) {
       toast.error(extractErrorMessage(err));
     }
@@ -216,6 +263,79 @@ export default function OrdersPage() {
                   className="bg-bakery-brown text-white font-medium px-4 rounded-full text-sm hover:bg-bakery-pink-dark"
                 >
                   Add
+                </button>
+              </form>
+            </div>
+
+            {/* --- BOOKING CALENDAR --- */}
+            <div className="bg-white rounded-2xl shadow-sm p-5 mt-6 border-t-4 border-bakery-pink">
+              <h2 className="font-semibold text-bakery-brown mb-3">Booking Calendar</h2>
+              <p className="text-xs text-bakery-brown/50 mb-3">
+                Upcoming dates with orders or custom cake requests, for the next 60 days. Block a
+                date once it's full — customers won't be able to pick it at checkout.
+              </p>
+
+              {upcomingBookings.length === 0 ? (
+                <p className="text-bakery-brown/50 text-sm mb-4">No upcoming bookings yet.</p>
+              ) : (
+                <ul className="space-y-1 mb-4 text-sm">
+                  {upcomingBookings.map((b) => (
+                    <li key={b.date} className="flex items-center justify-between py-1">
+                      <span className={b.is_blocked ? 'text-bakery-brown/40 line-through' : 'text-bakery-brown'}>
+                        {b.date} — {b.order_count} booking{b.order_count !== 1 ? 's' : ''}
+                      </span>
+                      {!b.is_blocked && (
+                        <button
+                          onClick={() => handleBlockDate(b.date, '')}
+                          className="text-bakery-brown/40 hover:text-red-500 text-xs"
+                        >
+                          Block
+                        </button>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              <h3 className="text-sm font-medium text-bakery-brown mb-2">Blocked Dates</h3>
+              <ul className="space-y-1 mb-4 text-sm">
+                {blockedDates.map((b) => (
+                  <li key={b.id} className="flex items-center justify-between py-1">
+                    <span className="text-bakery-brown">
+                      {b.date}{b.reason && ` — ${b.reason}`}
+                    </span>
+                    <button
+                      onClick={() => handleUnblockDate(b.id)}
+                      className="text-bakery-brown/40 hover:text-red-500 text-xs"
+                    >
+                      Unblock
+                    </button>
+                  </li>
+                ))}
+                {blockedDates.length === 0 && (
+                  <li className="text-bakery-brown/50 text-sm">No dates blocked.</li>
+                )}
+              </ul>
+
+              <form onSubmit={handleAddBlockedDate} className="flex gap-2">
+                <input
+                  type="date"
+                  value={newBlockDate}
+                  onChange={(e) => setNewBlockDate(e.target.value)}
+                  className="border border-bakery-pink/30 rounded-lg px-3 py-2 text-sm"
+                />
+                <input
+                  type="text"
+                  placeholder="Reason (optional)"
+                  value={newBlockReason}
+                  onChange={(e) => setNewBlockReason(e.target.value)}
+                  className="flex-1 border border-bakery-pink/30 rounded-lg px-3 py-2 text-sm"
+                />
+                <button
+                  type="submit"
+                  className="bg-bakery-brown text-white font-medium px-4 rounded-full text-sm hover:bg-bakery-pink-dark"
+                >
+                  Block
                 </button>
               </form>
             </div>
