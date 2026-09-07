@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from django.utils import timezone
 from rest_framework import serializers
+from orders.models import BlockedDate
 from .models import Category, CustomCakeReferenceImage, CustomCakeRequest, Product, ProductImage
 
 MIN_LEAD_DAYS = 5
@@ -107,6 +108,8 @@ class CustomCakeRequestSerializer(serializers.ModelSerializer):
                 f'Custom cake requests need at least {MIN_LEAD_DAYS} days notice — '
                 f'earliest available date is {earliest.isoformat()}.'
             )
+        if BlockedDate.objects.filter(date=value).exists():
+            raise serializers.ValidationError("That date isn't available — please pick a different one.")
         return value
 
 
