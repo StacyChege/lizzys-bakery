@@ -16,6 +16,8 @@ import MenuManagementPage from './pages/Admin/MenuManagementPage';
 import CheckoutPage from './pages/Checkout/CheckoutPage';
 import OrdersPage from './pages/Admin/OrdersPage';
 import CustomCakeRequestsPage from './pages/Admin/CustomCakeRequestsPage';
+import LocationPage from './pages/Location/LocationPage';
+import NotFoundPage from './pages/NotFound/NotFoundPage';
 
 function App() {
   return (
@@ -77,6 +79,8 @@ function App() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/custom-cake" element={<CustomCakePage />} />
           <Route path="/staff" element={<StaffPage />} />
+          <Route path="/location" element={<LocationPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
 
