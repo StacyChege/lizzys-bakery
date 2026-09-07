@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from django.utils import timezone
 from rest_framework import serializers
-from .models import Category, CustomCakeRequest, Product, ProductImage
+from .models import Category, CustomCakeReferenceImage, CustomCakeRequest, Product, ProductImage
 
 MIN_LEAD_DAYS = 5
 
@@ -79,13 +79,25 @@ class AdminProductImageUploadSerializer(serializers.ModelSerializer):
         read_only_fields = ['sort_order']
 
 
+class CustomCakeReferenceImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomCakeReferenceImage
+        fields = ['id', 'image']
+
+
 class CustomCakeRequestSerializer(serializers.ModelSerializer):
+    # reference_images arrive as separate files under the same form key
+    # (request.FILES.getlist('reference_images')), handled in the view —
+    # not a serializer field, since DRF can't bind a list of files to a
+    # nested model from multipart data in one pass.
     class Meta:
         model = CustomCakeRequest
         # status/created_at are baker-managed, not customer-settable — omitted from input
         fields = [
             'id', 'name', 'email', 'phone_number', 'date_needed',
-            'description', 'budget',
+            'occasion', 'tier_count', 'servings', 'flavour', 'filling',
+            'frosting_style', 'colour_theme', 'toppings', 'custom_message',
+            'special_notes', 'budget',
         ]
 
     def validate_date_needed(self, value):
@@ -99,13 +111,20 @@ class CustomCakeRequestSerializer(serializers.ModelSerializer):
 
 
 class AdminCustomCakeRequestSerializer(serializers.ModelSerializer):
+    reference_images = CustomCakeReferenceImageSerializer(many=True, read_only=True)
+
     class Meta:
         model = CustomCakeRequest
         fields = [
             'id', 'name', 'email', 'phone_number', 'date_needed',
-            'description', 'budget', 'status', 'quoted_price', 'created_at',
+            'occasion', 'tier_count', 'servings', 'flavour', 'filling',
+            'frosting_style', 'colour_theme', 'toppings', 'custom_message',
+            'special_notes', 'reference_images',
+            'budget', 'status', 'quoted_price', 'created_at',
         ]
         read_only_fields = [
             'id', 'name', 'email', 'phone_number', 'date_needed',
-            'description', 'budget', 'created_at',
+            'occasion', 'tier_count', 'servings', 'flavour', 'filling',
+            'frosting_style', 'colour_theme', 'toppings', 'custom_message',
+            'special_notes', 'budget', 'created_at',
         ]
