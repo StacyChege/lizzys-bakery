@@ -26,3 +26,12 @@ export function formatDateForApi(date: Date): string {
   const day = String(date.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
+
+// Inverse of formatDateForApi — builds a local Date from the year/month/day
+// fields directly, same reasoning: parsing "2026-09-17" with `new Date(...)`
+// treats it as UTC midnight, which react-datepicker's excludeDates then
+// compares against local day boundaries. Avoid the ambiguity entirely.
+export function parseApiDate(value: string): Date {
+  const [year, month, day] = value.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
