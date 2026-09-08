@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Phone, MapPin, MessageCircle } from 'lucide-react';
 import ScallopDivider from './ScallopDivider';
 
@@ -42,9 +43,14 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Footer copyright stamp line at the absolute bottom margin */}
-      <div className="text-center text-xs opacity-60 py-3 border-t border-bakery-cream/10">
-        © {new Date().getFullYear()} Lizzy's Bakery. Made with love, just for you.
+      {/* Footer copyright stamp line at the absolute bottom margin — the
+          staff link lives here rather than the main nav since it's an
+          internal tool, not something customers need to see */}
+      <div className="text-center text-xs opacity-60 py-3 border-t border-bakery-cream/10 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-3">
+        <span>© {new Date().getFullYear()} Lizzy's Bakery. Made with love, just for you.</span>
+        <Link to="/staff" className="hover:opacity-100 underline">
+          Staff Login
+        </Link>
       </div>
     </footer>
   );
