@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { fetchMyOrders } from '../../api/orders';
 import { ORDER_STATUS_LABELS } from '../../types/Order';
@@ -23,7 +24,15 @@ export default function AccountPage() {
         <div className="bg-white rounded-2xl shadow-sm p-8 border-t-4 border-bakery-pink-dark">
           <h1 className="font-script text-4xl text-bakery-pink-dark mb-4">My Account</h1>
           <p className="text-bakery-brown">Logged in as: {user?.email}</p>
-          <p className="text-bakery-brown">Role: {user?.role}</p>
+          <p className="text-bakery-brown mb-4">Role: {user?.role}</p>
+          {user?.role === 'ADMIN' && (
+            <Link
+              to="/admin"
+              className="inline-block bg-bakery-pink-dark text-white font-semibold px-5 py-2 rounded-full hover:bg-bakery-brown transition-colors text-sm"
+            >
+              Go to Admin Dashboard
+            </Link>
+          )}
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm p-8 border-t-4 border-bakery-brown">
