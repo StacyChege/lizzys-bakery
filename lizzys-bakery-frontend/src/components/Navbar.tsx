@@ -52,6 +52,14 @@ export default function Navbar() {
 
           {isAuthenticated ? (
             <div className="hidden md:flex items-center gap-3 font-body text-sm">
+              {user?.role === 'ADMIN' && (
+                <Link
+                  to="/admin"
+                  className="bg-bakery-pink-dark text-white font-semibold px-4 py-1.5 rounded-full hover:bg-bakery-brown transition-colors"
+                >
+                  Admin
+                </Link>
+              )}
               <Link to="/account" className="flex items-center gap-1 text-bakery-brown hover:text-bakery-pink">
                 <User className="w-5 h-5" />
                 {user?.full_name?.split(' ')[0]}
@@ -86,6 +94,11 @@ export default function Navbar() {
           <div className="border-t border-bakery-pink/20 pt-3 mt-1">
             {isAuthenticated ? (
               <>
+                {user?.role === 'ADMIN' && (
+                  <Link to="/admin" onClick={() => setMobileOpen(false)} className="block mb-2 font-semibold text-bakery-pink-dark">
+                    Admin Dashboard
+                  </Link>
+                )}
                 <Link to="/account" onClick={() => setMobileOpen(false)}>
                   {user?.full_name}
                 </Link>
