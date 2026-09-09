@@ -70,13 +70,13 @@ export default function CustomCakeRequestsPage() {
       <div className="max-w-3xl mx-auto font-body">
         <div className="flex items-center justify-between mb-8">
           <h1 className="font-script text-4xl text-bakery-pink-dark">Custom Cake Requests</h1>
-          <Link to="/admin" className="text-sm text-bakery-brown/60 hover:text-bakery-pink-dark underline">
+          <Link to="/admin" className="text-sm text-bakery-brown/70 hover:text-bakery-pink-dark underline">
             Back to Dashboard
           </Link>
         </div>
 
         {isLoading ? (
-          <p className="text-bakery-brown/60">Loading…</p>
+          <p className="text-bakery-brown/70">Loading…</p>
         ) : error ? (
           <p className="text-red-600">{error}</p>
         ) : (
@@ -84,6 +84,7 @@ export default function CustomCakeRequestsPage() {
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-semibold text-bakery-brown">All Requests</h2>
               <select
+                aria-label="Filter requests by status"
                 value={statusFilter}
                 onChange={(e) => handleFilterChange(e.target.value as CustomCakeRequestStatus | '')}
                 className="border border-bakery-pink/30 rounded-lg px-3 py-1.5 text-sm"
@@ -96,7 +97,7 @@ export default function CustomCakeRequestsPage() {
             </div>
 
             {requests.length === 0 ? (
-              <p className="text-bakery-brown/50 text-sm">No requests match this filter.</p>
+              <p className="text-bakery-brown/70 text-sm">No requests match this filter.</p>
             ) : (
               <div className="space-y-3">
                 {requests.map((req) => (
@@ -104,11 +105,12 @@ export default function CustomCakeRequestsPage() {
                     <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                       <div>
                         <span className="font-semibold text-bakery-brown">{req.name}</span>
-                        <span className="text-bakery-brown/60 text-sm ml-2">
+                        <span className="text-bakery-brown/70 text-sm ml-2">
                           {req.email} · {req.phone_number}
                         </span>
                       </div>
                       <select
+                        aria-label={`Update status for ${req.name}'s request`}
                         value={req.status}
                         onChange={(e) => handleStatusChange(req, e.target.value as CustomCakeRequestStatus)}
                         className="border border-bakery-pink/30 rounded-full px-3 py-1 text-xs"
@@ -120,15 +122,15 @@ export default function CustomCakeRequestsPage() {
                     </div>
 
                     <div className="grid sm:grid-cols-2 gap-x-4 gap-y-1 text-sm text-bakery-brown/80 mb-3">
-                      {req.occasion && <p><span className="text-bakery-brown/50">Occasion:</span> {req.occasion}</p>}
-                      <p><span className="text-bakery-brown/50">Tiers:</span> {req.tier_count}{req.servings ? ` · ~${req.servings} servings` : ''}</p>
-                      {req.flavour && <p><span className="text-bakery-brown/50">Flavour:</span> {req.flavour}</p>}
-                      {req.filling && <p><span className="text-bakery-brown/50">Filling:</span> {req.filling}</p>}
-                      {req.frosting_style && <p><span className="text-bakery-brown/50">Frosting:</span> {req.frosting_style}</p>}
-                      {req.colour_theme && <p><span className="text-bakery-brown/50">Colours:</span> {req.colour_theme}</p>}
-                      {req.toppings && <p className="sm:col-span-2"><span className="text-bakery-brown/50">Toppings:</span> {req.toppings}</p>}
-                      {req.custom_message && <p className="sm:col-span-2"><span className="text-bakery-brown/50">Cake message:</span> "{req.custom_message}"</p>}
-                      {req.special_notes && <p className="sm:col-span-2"><span className="text-bakery-brown/50">Notes:</span> {req.special_notes}</p>}
+                      {req.occasion && <p><span className="text-bakery-brown/70">Occasion:</span> {req.occasion}</p>}
+                      <p><span className="text-bakery-brown/70">Tiers:</span> {req.tier_count}{req.servings ? ` · ~${req.servings} servings` : ''}</p>
+                      {req.flavour && <p><span className="text-bakery-brown/70">Flavour:</span> {req.flavour}</p>}
+                      {req.filling && <p><span className="text-bakery-brown/70">Filling:</span> {req.filling}</p>}
+                      {req.frosting_style && <p><span className="text-bakery-brown/70">Frosting:</span> {req.frosting_style}</p>}
+                      {req.colour_theme && <p><span className="text-bakery-brown/70">Colours:</span> {req.colour_theme}</p>}
+                      {req.toppings && <p className="sm:col-span-2"><span className="text-bakery-brown/70">Toppings:</span> {req.toppings}</p>}
+                      {req.custom_message && <p className="sm:col-span-2"><span className="text-bakery-brown/70">Cake message:</span> "{req.custom_message}"</p>}
+                      {req.special_notes && <p className="sm:col-span-2"><span className="text-bakery-brown/70">Notes:</span> {req.special_notes}</p>}
                     </div>
 
                     {req.reference_images.length > 0 && (
@@ -145,7 +147,7 @@ export default function CustomCakeRequestsPage() {
                       </div>
                     )}
 
-                    <div className="flex flex-wrap justify-between text-xs text-bakery-brown/60 mb-3">
+                    <div className="flex flex-wrap justify-between text-xs text-bakery-brown/70 mb-3">
                       <span>Needed by {req.date_needed}</span>
                       {req.budget && <span>Customer's budget: KES {Number(req.budget).toLocaleString()}</span>}
                     </div>
