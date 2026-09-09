@@ -143,13 +143,13 @@ export default function OrdersPage() {
       <div className="max-w-4xl mx-auto font-body">
         <div className="flex items-center justify-between mb-8">
           <h1 className="font-script text-4xl text-bakery-pink-dark">Orders</h1>
-          <Link to="/admin" className="text-sm text-bakery-brown/60 hover:text-bakery-pink-dark underline">
+          <Link to="/admin" className="text-sm text-bakery-brown/70 hover:text-bakery-pink-dark underline">
             Back to Dashboard
           </Link>
         </div>
 
         {isLoading ? (
-          <p className="text-bakery-brown/60">Loading…</p>
+          <p className="text-bakery-brown/70">Loading…</p>
         ) : error ? (
           <p className="text-red-600">{error}</p>
         ) : (
@@ -159,6 +159,7 @@ export default function OrdersPage() {
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-semibold text-bakery-brown">All Orders</h2>
                 <select
+                  aria-label="Filter orders by status"
                   value={statusFilter}
                   onChange={(e) => handleFilterChange(e.target.value as OrderStatus | '')}
                   className="border border-bakery-pink/30 rounded-lg px-3 py-1.5 text-sm"
@@ -171,7 +172,7 @@ export default function OrdersPage() {
               </div>
 
               {orders.length === 0 ? (
-                <p className="text-bakery-brown/50 text-sm">No orders match this filter.</p>
+                <p className="text-bakery-brown/70 text-sm">No orders match this filter.</p>
               ) : (
                 <div className="space-y-3">
                   {orders.map((order) => (
@@ -179,9 +180,10 @@ export default function OrdersPage() {
                       <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                         <div>
                           <span className="font-semibold text-bakery-brown">Order #{order.id}</span>
-                          <span className="text-bakery-brown/60 text-sm ml-2">{order.contact_name} · {order.contact_phone}</span>
+                          <span className="text-bakery-brown/70 text-sm ml-2">{order.contact_name} · {order.contact_phone}</span>
                         </div>
                         <select
+                          aria-label={`Update status for order #${order.id}`}
                           value={order.status}
                           onChange={(e) => handleStatusChange(order, e.target.value as OrderStatus)}
                           className="border border-bakery-pink/30 rounded-full px-3 py-1 text-xs"
@@ -199,7 +201,7 @@ export default function OrdersPage() {
                           </li>
                         ))}
                       </ul>
-                      <div className="flex flex-wrap justify-between text-xs text-bakery-brown/60">
+                      <div className="flex flex-wrap justify-between text-xs text-bakery-brown/70">
                         <span>
                           Needed {order.date_needed} ·{' '}
                           {order.fulfilment_method === 'PICKUP'
@@ -214,7 +216,7 @@ export default function OrdersPage() {
                         </span>
                       </div>
                       {order.notes && (
-                        <p className="text-xs text-bakery-brown/50 mt-1 italic">Note: {order.notes}</p>
+                        <p className="text-xs text-bakery-brown/70 mt-1 italic">Note: {order.notes}</p>
                       )}
                     </div>
                   ))}
@@ -231,14 +233,14 @@ export default function OrdersPage() {
                     <span className="text-bakery-brown">{z.name} — KES {Number(z.fee).toLocaleString()}</span>
                     <button
                       onClick={() => handleDeleteZone(z.id)}
-                      className="text-bakery-brown/40 hover:text-red-500 text-xs"
+                      className="text-bakery-brown/70 hover:text-red-500 text-xs"
                     >
                       Delete
                     </button>
                   </li>
                 ))}
                 {zones.length === 0 && (
-                  <li className="text-bakery-brown/50 text-sm">No delivery zones set up yet.</li>
+                  <li className="text-bakery-brown/70 text-sm">No delivery zones set up yet.</li>
                 )}
               </ul>
               <form onSubmit={handleAddZone} className="flex gap-2">
@@ -270,24 +272,24 @@ export default function OrdersPage() {
             {/* --- BOOKING CALENDAR --- */}
             <div className="bg-white rounded-2xl shadow-sm p-5 mt-6 border-t-4 border-bakery-pink">
               <h2 className="font-semibold text-bakery-brown mb-3">Booking Calendar</h2>
-              <p className="text-xs text-bakery-brown/50 mb-3">
+              <p className="text-xs text-bakery-brown/70 mb-3">
                 Upcoming dates with orders or custom cake requests, for the next 60 days. Block a
                 date once it's full — customers won't be able to pick it at checkout.
               </p>
 
               {upcomingBookings.length === 0 ? (
-                <p className="text-bakery-brown/50 text-sm mb-4">No upcoming bookings yet.</p>
+                <p className="text-bakery-brown/70 text-sm mb-4">No upcoming bookings yet.</p>
               ) : (
                 <ul className="space-y-1 mb-4 text-sm">
                   {upcomingBookings.map((b) => (
                     <li key={b.date} className="flex items-center justify-between py-1">
-                      <span className={b.is_blocked ? 'text-bakery-brown/40 line-through' : 'text-bakery-brown'}>
+                      <span className={b.is_blocked ? 'text-bakery-brown/70 line-through' : 'text-bakery-brown'}>
                         {b.date} — {b.order_count} booking{b.order_count !== 1 ? 's' : ''}
                       </span>
                       {!b.is_blocked && (
                         <button
                           onClick={() => handleBlockDate(b.date, '')}
-                          className="text-bakery-brown/40 hover:text-red-500 text-xs"
+                          className="text-bakery-brown/70 hover:text-red-500 text-xs"
                         >
                           Block
                         </button>
@@ -306,20 +308,21 @@ export default function OrdersPage() {
                     </span>
                     <button
                       onClick={() => handleUnblockDate(b.id)}
-                      className="text-bakery-brown/40 hover:text-red-500 text-xs"
+                      className="text-bakery-brown/70 hover:text-red-500 text-xs"
                     >
                       Unblock
                     </button>
                   </li>
                 ))}
                 {blockedDates.length === 0 && (
-                  <li className="text-bakery-brown/50 text-sm">No dates blocked.</li>
+                  <li className="text-bakery-brown/70 text-sm">No dates blocked.</li>
                 )}
               </ul>
 
               <form onSubmit={handleAddBlockedDate} className="flex gap-2">
                 <input
                   type="date"
+                  aria-label="Date to block"
                   value={newBlockDate}
                   onChange={(e) => setNewBlockDate(e.target.value)}
                   className="border border-bakery-pink/30 rounded-lg px-3 py-2 text-sm"
@@ -327,6 +330,7 @@ export default function OrdersPage() {
                 <input
                   type="text"
                   placeholder="Reason (optional)"
+                  aria-label="Reason for blocking this date"
                   value={newBlockReason}
                   onChange={(e) => setNewBlockReason(e.target.value)}
                   className="flex-1 border border-bakery-pink/30 rounded-lg px-3 py-2 text-sm"
