@@ -7,7 +7,7 @@ from .models import CustomCakeRequest
 # request starts in, not a change worth announcing.
 STATUS_UPDATE_MESSAGES = {
     CustomCakeRequest.REVIEWED: "we've reviewed your custom cake request and are working on a quote.",
-    CustomCakeRequest.QUOTED: "we've sent you a quote — check your phone/WhatsApp for the price and next steps.",
+    CustomCakeRequest.QUOTED: "we've put together a quote for you — see the price below. We'll follow up by phone/WhatsApp to confirm the details and arrange payment.",
     CustomCakeRequest.CONFIRMED: "your custom cake is confirmed and your date is locked in!",
     CustomCakeRequest.DECLINED: "we're unable to take on this request. Please get in touch if you have questions.",
 }
