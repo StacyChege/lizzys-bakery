@@ -41,7 +41,7 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-4">
-          <Link to="/cart" className="relative">
+          <Link to="/cart" className="relative" aria-label={`Cart${cartItemCount > 0 ? `, ${cartItemCount} item${cartItemCount > 1 ? 's' : ''}` : ''}`}>
             <ShoppingCart className="w-6 h-6 text-bakery-brown" />
             {cartItemCount > 0 && (
               <span className="absolute -top-2 -right-2 bg-bakery-pink text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
@@ -66,19 +66,24 @@ export default function Navbar() {
               </Link>
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-1 text-bakery-brown/60 hover:text-bakery-pink"
+                className="flex items-center gap-1 text-bakery-brown/70 hover:text-bakery-pink"
                 title="Log out"
               >
                 <LogOut className="w-5 h-5" />
               </button>
             </div>
           ) : (
-            <Link to="/login" className="hidden md:block">
+            <Link to="/login" className="hidden md:block" aria-label="Sign in">
               <User className="w-6 h-6 text-bakery-brown" />
             </Link>
           )}
 
-          <button className="md:hidden" onClick={() => setMobileOpen(!mobileOpen)}>
+          <button
+            className="md:hidden"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileOpen}
+          >
             <MenuIcon className="w-6 h-6 text-bakery-brown" />
           </button>
         </div>
