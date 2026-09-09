@@ -33,53 +33,57 @@ export default function CartPage() {
           return (
             <div
               key={item.id}
-              className="flex items-center gap-4 rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition-shadow"
+              className="flex flex-col sm:flex-row sm:items-center gap-4 rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition-shadow"
             >
-              <div className="w-20 h-20 rounded-lg bg-bakery-cream/60 flex items-center justify-center overflow-hidden shrink-0">
-                {item.image ? (
-                  <img src={mediaUrl(item.image) ?? undefined} alt={item.name} className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-bakery-pink/40 text-xs text-center px-1">No Image</span>
-                )}
-              </div>
+              <div className="flex items-center gap-4 min-w-0">
+                <div className="w-20 h-20 rounded-lg bg-bakery-cream/60 flex items-center justify-center overflow-hidden shrink-0">
+                  {item.image ? (
+                    <img src={mediaUrl(item.image) ?? undefined} alt={item.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-bakery-pink/40 text-xs text-center px-1">No Image</span>
+                  )}
+                </div>
 
-              <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-bakery-brown truncate">{item.name}</h3>
-                {(item.flavour || item.size) && (
-                  <p className="text-xs text-bakery-brown/60">
-                    {[item.flavour, item.size?.label].filter(Boolean).join(' · ')}
+                <div className="min-w-0">
+                  <h3 className="font-semibold text-bakery-brown">{item.name}</h3>
+                  {(item.flavour || item.size) && (
+                    <p className="text-xs text-bakery-brown/60">
+                      {[item.flavour, item.size?.label].filter(Boolean).join(' · ')}
+                    </p>
+                  )}
+                  <p className="text-bakery-pink-dark font-medium text-sm mt-1">
+                    KES {unitPrice.toLocaleString()}
                   </p>
-                )}
-                <p className="text-bakery-pink-dark font-medium text-sm mt-1">
-                  KES {unitPrice.toLocaleString()}
-                </p>
+                </div>
               </div>
 
-              <div className="flex items-center border border-bakery-pink/30 rounded-lg">
+              <div className="flex items-center justify-between sm:justify-end gap-4 sm:ml-auto">
+                <div className="flex items-center border border-bakery-pink/30 rounded-lg">
+                  <button
+                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                    className="px-2.5 py-1 text-bakery-brown hover:text-bakery-pink-dark"
+                    aria-label="Decrease quantity"
+                  >
+                    −
+                  </button>
+                  <span className="px-2.5 text-sm font-medium text-bakery-brown">{item.quantity}</span>
+                  <button
+                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    className="px-2.5 py-1 text-bakery-brown hover:text-bakery-pink-dark"
+                    aria-label="Increase quantity"
+                  >
+                    +
+                  </button>
+                </div>
+
                 <button
-                  onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                  className="px-2.5 py-1 text-bakery-brown hover:text-bakery-pink-dark"
-                  aria-label="Decrease quantity"
+                  onClick={() => removeItem(item.id)}
+                  className="text-bakery-brown/40 hover:text-red-500 text-sm shrink-0"
+                  aria-label={`Remove ${item.name} from cart`}
                 >
-                  −
-                </button>
-                <span className="px-2.5 text-sm font-medium text-bakery-brown">{item.quantity}</span>
-                <button
-                  onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                  className="px-2.5 py-1 text-bakery-brown hover:text-bakery-pink-dark"
-                  aria-label="Increase quantity"
-                >
-                  +
+                  Remove
                 </button>
               </div>
-
-              <button
-                onClick={() => removeItem(item.id)}
-                className="text-bakery-brown/40 hover:text-red-500 text-sm shrink-0"
-                aria-label={`Remove ${item.name} from cart`}
-              >
-                Remove
-              </button>
             </div>
           );
         })}
