@@ -28,12 +28,12 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen py-10 px-4">
     <div className="max-w-3xl mx-auto font-body">
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
         <div>
           <h1 className="font-script text-4xl text-bakery-pink-dark mb-1">Admin Dashboard</h1>
           <p className="text-bakery-brown/60">Welcome, {user?.full_name}</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Link
             to="/admin/orders"
             className="bg-white text-bakery-pink-dark border-2 border-bakery-pink-dark font-semibold px-5 py-2 rounded-full hover:bg-bakery-pink/10 transition-colors text-sm"
