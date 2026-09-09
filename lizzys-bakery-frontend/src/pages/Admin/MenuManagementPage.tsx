@@ -197,13 +197,13 @@ export default function MenuManagementPage() {
       <div className="max-w-4xl mx-auto font-body">
         <div className="flex items-center justify-between mb-8">
           <h1 className="font-script text-4xl text-bakery-pink-dark">Menu Management</h1>
-          <Link to="/admin" className="text-sm text-bakery-brown/60 hover:text-bakery-pink-dark underline">
+          <Link to="/admin" className="text-sm text-bakery-brown/70 hover:text-bakery-pink-dark underline">
             Back to Dashboard
           </Link>
         </div>
 
         {isLoading ? (
-          <p className="text-bakery-brown/60">Loading…</p>
+          <p className="text-bakery-brown/70">Loading…</p>
         ) : error ? (
           <p className="text-red-600">{error}</p>
         ) : (
@@ -217,7 +217,7 @@ export default function MenuManagementPage() {
                     <span className="text-bakery-brown">{c.name}</span>
                     <button
                       onClick={() => handleDeleteCategory(c.id)}
-                      className="text-bakery-brown/40 hover:text-red-500 text-xs"
+                      className="text-bakery-brown/70 hover:text-red-500 text-xs"
                     >
                       Delete
                     </button>
@@ -276,6 +276,7 @@ export default function MenuManagementPage() {
                       className="border border-bakery-pink/30 rounded-lg px-3 py-2 text-sm"
                     />
                     <select
+                      aria-label="Category"
                       value={productForm.category}
                       onChange={(e) =>
                         setProductForm((f) => ({ ...f, category: Number(e.target.value) }))
@@ -367,14 +368,14 @@ export default function MenuManagementPage() {
                         }}
                         className="text-xs text-bakery-brown/70"
                       />
-                      {isUploadingImage && <p className="text-xs text-bakery-brown/50 mt-1">Uploading…</p>}
+                      {isUploadingImage && <p className="text-xs text-bakery-brown/70 mt-1">Uploading…</p>}
                     </div>
                   ) : (
-                    <p className="text-xs text-bakery-brown/50">
+                    <p className="text-xs text-bakery-brown/70">
                       Save the product first, then edit it again to add photos.
                     </p>
                   )}
-                  <p className="text-xs text-bakery-brown/50">
+                  <p className="text-xs text-bakery-brown/70">
                     Size options are still managed in the Django admin for now.
                   </p>
                   <div className="flex gap-2">
@@ -387,7 +388,7 @@ export default function MenuManagementPage() {
                     <button
                       type="button"
                       onClick={() => setEditingProductId(null)}
-                      className="text-bakery-brown/60 text-sm px-3"
+                      className="text-bakery-brown/70 text-sm px-3"
                     >
                       Cancel
                     </button>
@@ -402,7 +403,7 @@ export default function MenuManagementPage() {
                       <p className={`font-medium text-bakery-brown truncate ${!p.is_available ? 'opacity-50' : ''}`}>
                         {p.name}
                       </p>
-                      <p className="text-xs text-bakery-brown/50">
+                      <p className="text-xs text-bakery-brown/70">
                         {categoryName(p.category)} · KES {Number(p.base_price).toLocaleString()}
                       </p>
                     </div>
@@ -412,20 +413,20 @@ export default function MenuManagementPage() {
                         className={`text-xs px-3 py-1 rounded-full border ${
                           p.is_available
                             ? 'border-bakery-pink-dark text-bakery-pink-dark'
-                            : 'border-bakery-brown/30 text-bakery-brown/50'
+                            : 'border-bakery-brown/30 text-bakery-brown/70'
                         }`}
                       >
                         {p.is_available ? 'Available' : 'Sold Out'}
                       </button>
                       <button
                         onClick={() => startEditProduct(p)}
-                        className="text-sm text-bakery-brown/60 hover:text-bakery-pink-dark"
+                        className="text-sm text-bakery-brown/70 hover:text-bakery-pink-dark"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDeleteProduct(p.id)}
-                        className="text-sm text-bakery-brown/40 hover:text-red-500"
+                        className="text-sm text-bakery-brown/70 hover:text-red-500"
                       >
                         Delete
                       </button>
