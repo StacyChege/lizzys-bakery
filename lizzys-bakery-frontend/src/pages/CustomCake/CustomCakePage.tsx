@@ -196,7 +196,7 @@ export default function CustomCakePage() {
 
         {/* Progress bar */}
         <div className="mb-8">
-          <div className="flex justify-between text-xs text-bakery-brown/50 mb-1.5">
+          <div className="flex justify-between text-xs text-bakery-brown/70 mb-1.5">
             <span>Step {step} of {TOTAL_STEPS}</span>
           </div>
           <div className="h-1.5 bg-bakery-pink/15 rounded-full overflow-hidden">
@@ -264,7 +264,7 @@ export default function CustomCakePage() {
                   onChange={(e) => setServings(e.target.value)}
                   className="w-full border border-bakery-pink/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-bakery-pink"
                 />
-                <p className="text-xs text-bakery-brown/50 mt-1">
+                <p className="text-xs text-bakery-brown/70 mt-1">
                   We'll send an estimated price range based on this before confirming a final quote.
                 </p>
               </div>
@@ -371,7 +371,7 @@ export default function CustomCakePage() {
                           } transition-transform`}
                           style={{ backgroundColor: c.hex }}
                         />
-                        <span className="text-[10px] text-bakery-brown/60">{c.name}</span>
+                        <span className="text-[10px] text-bakery-brown/70">{c.name}</span>
                       </button>
                     );
                   })}
@@ -417,7 +417,7 @@ export default function CustomCakePage() {
               <h2 className="font-semibold text-bakery-brown">
                 Have a reference photo? (optional, up to {MAX_REFERENCE_IMAGES})
               </h2>
-              <p className="text-xs text-bakery-brown/50">
+              <p className="text-xs text-bakery-brown/70">
                 Upload a photo of a cake you love so we understand the look you're going for.
               </p>
               <div className="flex flex-wrap gap-2">
@@ -524,7 +524,7 @@ export default function CustomCakePage() {
               type="button"
               onClick={goBack}
               disabled={step === 1}
-              className="flex items-center gap-1 text-sm text-bakery-brown/60 hover:text-bakery-pink-dark disabled:opacity-0"
+              className="flex items-center gap-1 text-sm text-bakery-brown/70 hover:text-bakery-pink-dark disabled:opacity-0"
             >
               <ChevronLeft className="w-4 h-4" /> Back
             </button>

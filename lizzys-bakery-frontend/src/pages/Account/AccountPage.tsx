@@ -39,11 +39,11 @@ export default function AccountPage() {
           <h2 className="font-semibold text-bakery-brown text-lg mb-4">Order History</h2>
 
           {isLoading ? (
-            <p className="text-bakery-brown/60">Loading…</p>
+            <p className="text-bakery-brown/70">Loading…</p>
           ) : error ? (
             <p className="text-red-600">{error}</p>
           ) : orders.length === 0 ? (
-            <p className="text-bakery-brown/50">You haven't placed any orders yet.</p>
+            <p className="text-bakery-brown/70">You haven't placed any orders yet.</p>
           ) : (
             <div className="space-y-4">
               {orders.map((order) => (
@@ -59,7 +59,7 @@ export default function AccountPage() {
                       <li key={item.id}>{item.quantity} x {item.product_name}</li>
                     ))}
                   </ul>
-                  <div className="flex justify-between text-sm text-bakery-brown/60">
+                  <div className="flex justify-between text-sm text-bakery-brown/70">
                     <span>Needed by {order.date_needed}</span>
                     <span className="font-medium text-bakery-brown">
                       KES {Number(order.total).toLocaleString()}

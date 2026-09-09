@@ -10,7 +10,7 @@ export default function CartPage() {
       <div className="min-h-[70vh] flex items-center px-4">
         <div className="max-w-2xl mx-auto text-center font-body">
           <p className="font-script text-3xl text-bakery-pink-dark mb-2">Your cart is empty</p>
-          <p className="text-bakery-brown/60 mb-6">Looks like you haven't added anything yet.</p>
+          <p className="text-bakery-brown/70 mb-6">Looks like you haven't added anything yet.</p>
           <Link
             to="/menu"
             className="inline-block bg-bakery-pink-dark text-white font-semibold px-6 py-2.5 rounded-full hover:bg-bakery-brown transition-colors"
@@ -47,7 +47,7 @@ export default function CartPage() {
                 <div className="min-w-0">
                   <h3 className="font-semibold text-bakery-brown">{item.name}</h3>
                   {(item.flavour || item.size) && (
-                    <p className="text-xs text-bakery-brown/60">
+                    <p className="text-xs text-bakery-brown/70">
                       {[item.flavour, item.size?.label].filter(Boolean).join(' · ')}
                     </p>
                   )}
@@ -78,7 +78,7 @@ export default function CartPage() {
 
                 <button
                   onClick={() => removeItem(item.id)}
-                  className="text-bakery-brown/40 hover:text-red-500 text-sm shrink-0"
+                  className="text-bakery-brown/70 hover:text-red-500 text-sm shrink-0"
                   aria-label={`Remove ${item.name} from cart`}
                 >
                   Remove

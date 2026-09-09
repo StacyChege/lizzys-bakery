@@ -135,7 +135,7 @@ export default function MenuPage() {
 
       {/* --- PRODUCTS GRID --- */}
       {isFiltering ? (
-        <div className="text-center py-12 text-bakery-brown/60">
+        <div className="text-center py-12 text-bakery-brown/70">
           Updating menu...
         </div>
       ) : products.length === 0 ? (
@@ -143,7 +143,7 @@ export default function MenuPage() {
           <p className="font-script text-3xl text-bakery-pink-dark mb-2">
             Nothing here yet!
           </p>
-          <p className="text-bakery-brown/60">
+          <p className="text-bakery-brown/70">
             {debouncedSearch
               ? `No treats matching "${debouncedSearch}". Try a different search.`
               : selectedCategory

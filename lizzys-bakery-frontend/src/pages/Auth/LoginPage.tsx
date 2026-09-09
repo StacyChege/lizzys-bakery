@@ -73,7 +73,7 @@ export default function LoginPage() {
               className="w-full border border-bakery-pink/30 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-bakery-pink"
             />
             {fieldErrors.password && <p className="text-red-500 text-xs mt-1">{fieldErrors.password}</p>}
-            <Link to="/forgot-password" className="block text-right text-xs text-bakery-brown/60 hover:text-bakery-pink-dark mt-1">
+            <Link to="/forgot-password" className="block text-right text-xs text-bakery-brown/70 hover:text-bakery-pink-dark mt-1">
               Forgot password?
             </Link>
           </div>
@@ -91,7 +91,7 @@ export default function LoginPage() {
           Don't have an account? <Link to="/register" className="text-bakery-pink-dark font-medium">Register</Link>
         </p>
         <p className="text-center text-sm font-body mt-2">
-          <Link to="/menu" className="text-bakery-brown/60 underline">Continue as guest</Link>
+          <Link to="/menu" className="text-bakery-brown/70 underline">Continue as guest</Link>
         </p>
       </div>
     </div>

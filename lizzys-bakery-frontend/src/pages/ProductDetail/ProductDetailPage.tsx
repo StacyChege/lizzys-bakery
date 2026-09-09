@@ -118,7 +118,7 @@ export default function ProductDetailPage() {
 
       {/* ---------- DETAILS + SELECTORS ---------- */}
       <div>
-        <p className="text-xs text-bakery-brown/50 uppercase tracking-wide mb-1">
+        <p className="text-xs text-bakery-brown/70 uppercase tracking-wide mb-1">
           {product.category.name}
         </p>
         <h1 className="font-script text-4xl text-bakery-pink-dark mb-2">{product.name}</h1>

@@ -31,7 +31,7 @@ export default function AdminDashboard() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
         <div>
           <h1 className="font-script text-4xl text-bakery-pink-dark mb-1">Admin Dashboard</h1>
-          <p className="text-bakery-brown/60">Welcome, {user?.full_name}</p>
+          <p className="text-bakery-brown/70">Welcome, {user?.full_name}</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <Link
@@ -56,7 +56,7 @@ export default function AdminDashboard() {
       </div>
 
       {isLoading ? (
-        <p className="text-bakery-brown/60">Loading…</p>
+        <p className="text-bakery-brown/70">Loading…</p>
       ) : error ? (
         <p className="text-red-600">{error}</p>
       ) : (
@@ -67,23 +67,23 @@ export default function AdminDashboard() {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
                 <div className="bg-white rounded-xl shadow-sm p-4 border-t-4 border-bakery-pink-dark text-center">
                   <p className="text-2xl font-bold text-bakery-pink-dark">{stats.orders_this_week}</p>
-                  <p className="text-xs text-bakery-brown/60">Orders this week</p>
+                  <p className="text-xs text-bakery-brown/70">Orders this week</p>
                 </div>
                 <div className="bg-white rounded-xl shadow-sm p-4 border-t-4 border-bakery-brown text-center">
                   <p className="text-2xl font-bold text-bakery-brown">{stats.orders_this_month}</p>
-                  <p className="text-xs text-bakery-brown/60">Orders this month</p>
+                  <p className="text-xs text-bakery-brown/70">Orders this month</p>
                 </div>
                 <div className="bg-white rounded-xl shadow-sm p-4 border-t-4 border-bakery-pink-dark text-center">
                   <p className="text-lg font-bold text-bakery-pink-dark">
                     KES {stats.revenue_this_week.toLocaleString()}
                   </p>
-                  <p className="text-xs text-bakery-brown/60">Revenue this week</p>
+                  <p className="text-xs text-bakery-brown/70">Revenue this week</p>
                 </div>
                 <div className="bg-white rounded-xl shadow-sm p-4 border-t-4 border-bakery-brown text-center">
                   <p className="text-lg font-bold text-bakery-brown">
                     KES {stats.revenue_this_month.toLocaleString()}
                   </p>
-                  <p className="text-xs text-bakery-brown/60">Revenue this month</p>
+                  <p className="text-xs text-bakery-brown/70">Revenue this month</p>
                 </div>
               </div>
 
@@ -108,7 +108,7 @@ export default function AdminDashboard() {
           </h2>
 
       {!summary || summary.by_staff.length === 0 ? (
-        <p className="text-bakery-brown/50">No staff shifts recorded yet today.</p>
+        <p className="text-bakery-brown/70">No staff shifts recorded yet today.</p>
       ) : (
         <>
           <div className="space-y-4 mb-6">
@@ -116,7 +116,7 @@ export default function AdminDashboard() {
               <div key={i} className="bg-white rounded-xl shadow-sm p-5 border-t-4 border-bakery-pink-dark">
                 <div className="flex justify-between items-baseline mb-2">
                   <h3 className="font-semibold text-bakery-brown">{shift.staff_name}</h3>
-                  <span className="text-xs text-bakery-brown/50">
+                  <span className="text-xs text-bakery-brown/70">
                     {new Date(shift.clock_in).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     {' – '}
                     {shift.clock_out
@@ -125,7 +125,7 @@ export default function AdminDashboard() {
                   </span>
                 </div>
                 {shift.sales.length === 0 ? (
-                  <p className="text-sm text-bakery-brown/40">No sales logged.</p>
+                  <p className="text-sm text-bakery-brown/70">No sales logged.</p>
                 ) : (
                   <ul className="space-y-1 mb-3 text-sm">
                     {shift.sales.map((s) => (

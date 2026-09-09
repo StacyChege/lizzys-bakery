@@ -156,7 +156,7 @@ export default function CheckoutPage() {
       <div className="min-h-[70vh] flex items-center px-4">
         <div className="max-w-lg mx-auto text-center font-body">
           <p className="font-script text-3xl text-bakery-pink-dark mb-2">Nothing to check out</p>
-          <p className="text-bakery-brown/60 mb-6">Your cart is empty — add something from the menu first.</p>
+          <p className="text-bakery-brown/70 mb-6">Your cart is empty — add something from the menu first.</p>
           <Link
             to="/menu"
             className="inline-block bg-bakery-pink-dark text-white font-semibold px-6 py-2.5 rounded-full hover:bg-bakery-brown transition-colors"
@@ -296,7 +296,7 @@ export default function CheckoutPage() {
             >
               {isSubmitting ? 'Placing order…' : 'Place Order'}
             </button>
-            <p className="text-xs text-bakery-brown/50 text-center">
+            <p className="text-xs text-bakery-brown/70 text-center">
               No payment happens on this site — we'll confirm your order and arrange M-Pesa payment directly.
             </p>
           </form>
