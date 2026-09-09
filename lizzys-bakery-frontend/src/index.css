@@ -3,6 +3,10 @@
 @theme {
   --color-bakery-pink: #F06292;
   --color-bakery-pink-dark: #C2185B;
+  /* Lighter pink for small text on the dark bakery-brown footer — plain
+     bakery-pink measures ~4.0:1 there, just under WCAG AA's 4.5:1 for
+     normal-size text. This hits ~6.7:1. */
+  --color-bakery-pink-light: #FF8FAB;
   --color-bakery-cream: #FFFFFF;
   --color-bakery-brown: #3B2621;
   --font-script: "Dancing Script", cursive;

@@ -29,7 +29,7 @@ export default function Footer() {
             href={`https://wa.me/${WHATSAPP_NUMBER}`}
             target="_blank"
             rel="noreferrer"
-            className="flex items-center gap-2 text-bakery-pink hover:text-bakery-cream transition-colors w-fit"
+            className="flex items-center gap-2 text-bakery-pink-light hover:text-bakery-cream transition-colors w-fit"
           >
             <MessageCircle className="w-4 h-4" /> WhatsApp Us
           </a>
@@ -37,7 +37,7 @@ export default function Footer() {
 
         {/* Column 3: Crucial policy guidelines to prevent late-notice orders */}
         <div className="text-sm space-y-1 opacity-90">
-          <p className="font-semibold text-bakery-pink">Ordering Policy</p>
+          <p className="font-semibold text-bakery-pink-light">Ordering Policy</p>
           <p>All orders — standard or custom — must be placed at least 5 days before the date needed.</p>
           <p>Choose pickup, your own delivery rider, or our bakery delivery at checkout.</p>
         </div>
