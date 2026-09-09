@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { submitCustomCakeRequest } from '../../api/customCakes';
 import { fetchBlockedDates } from '../../api/orders';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { isValidEmail } from '../../utils/validateForm';
 import { earliestAllowedDate, formatDateForApi, parseApiDate } from '../../utils/dateRules';
 
@@ -38,6 +39,7 @@ function toggleInList(list: string[], value: string): string[] {
 }
 
 export default function CustomCakePage() {
+  useDocumentTitle('Design Your Cake');
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);

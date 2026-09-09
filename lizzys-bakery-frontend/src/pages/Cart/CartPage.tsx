@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../../hooks/useCart';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import mediaUrl from '../../utils/mediaUrl';
 
 export default function CartPage() {
+  useDocumentTitle('Your Cart');
   const { items, totalPrice, updateQuantity, removeItem } = useCart();
 
   if (items.length === 0) {

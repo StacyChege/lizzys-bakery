@@ -4,6 +4,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useCart } from '../../hooks/useCart';
 import { useAuth } from '../../hooks/useAuth';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { fetchBlockedDates, fetchDeliveryZones, submitOrder } from '../../api/orders';
 import { earliestAllowedDate, formatDateForApi, parseApiDate } from '../../utils/dateRules';
 import { isValidEmail } from '../../utils/validateForm';
@@ -22,6 +23,7 @@ function extractErrorMessage(err: unknown): string {
 }
 
 export default function CheckoutPage() {
+  useDocumentTitle('Checkout');
   const { items, totalPrice, clearCart } = useCart();
   const { user } = useAuth();
 

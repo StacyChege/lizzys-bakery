@@ -4,9 +4,12 @@ import fetchProducts  from '../../api/products';
 import type Category from '../../types/Category';
 import type Product from '../../types/Product';
 import useDebounce from '../../hooks/useDebounce';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import ProductCard from '../../components/ProductCard';
 
 export default function MenuPage() {
+  useDocumentTitle('Menu');
+
   // --- STATE ---
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);

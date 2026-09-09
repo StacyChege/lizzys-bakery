@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { fetchProductDetail } from '../../api/products';
 import type { ProductDetail } from '../../types/Product';
 import { useCart } from '../../hooks/useCart';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import mediaUrl from '../../utils/mediaUrl';
 
 export default function ProductDetailPage() {
@@ -24,6 +25,8 @@ export default function ProductDetailPage() {
   const [selectedFlavour, setSelectedFlavour] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<{ label: string; price_modifier: number } | null>(null);
   const [quantity, setQuantity] = useState(1);
+
+  useDocumentTitle(product?.name ?? 'Menu');
 
   // This effect depends on [slug] — meaning if slug ever changes (e.g. you click a DIFFERENT
   // product while already on this page), it re-runs and fetches the new product's data.

@@ -2,8 +2,11 @@ import { Link } from 'react-router-dom';
 import { Cake, Heart, Sparkles } from 'lucide-react';
 import ScallopDivider from '../../components/ScallopDivider';
 import heroImage from '../../assets/hero-cake-coffee.jpg';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 export default function HomePage() {
+  useDocumentTitle('');
+
   return (
     <div className="font-body">
       {/* ---------- HERO ---------- */}

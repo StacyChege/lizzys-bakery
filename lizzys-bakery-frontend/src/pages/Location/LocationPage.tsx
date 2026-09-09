@@ -1,10 +1,13 @@
 import { Phone, MapPin, Clock, MessageCircle } from 'lucide-react';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const WHATSAPP_NUMBER = '254725941831'; // 0725 941 831 in international format, no leading 0
 const PHONE_DISPLAY = '0725 941 831';
 const AREA = 'Kikuyu, Kenya';
 
 export default function LocationPage() {
+  useDocumentTitle('Find Us');
+
   return (
     <div className="py-12 px-4 font-body">
       <div className="max-w-4xl mx-auto">
