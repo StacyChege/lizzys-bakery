@@ -1,9 +1,11 @@
 import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { requestPasswordReset } from '../../api/auth';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { isValidEmail } from '../../utils/validateForm';
 
 export default function ForgotPasswordPage() {
+  useDocumentTitle('Forgot Password');
   const [email, setEmail] = useState('');
   const [fieldError, setFieldError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);

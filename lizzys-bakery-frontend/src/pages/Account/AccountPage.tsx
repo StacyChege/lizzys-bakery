@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { fetchMyOrders } from '../../api/orders';
 import { ORDER_STATUS_LABELS } from '../../types/Order';
 import type { Order } from '../../types/Order';
 
 export default function AccountPage() {
+  useDocumentTitle('My Account');
   const { user } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);

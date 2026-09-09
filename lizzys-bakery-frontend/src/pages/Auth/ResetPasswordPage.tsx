@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { confirmPasswordReset } from '../../api/auth';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 function extractErrorMessage(err: unknown): string {
   if (typeof err === 'object' && err !== null && 'response' in err) {
@@ -15,6 +16,7 @@ function extractErrorMessage(err: unknown): string {
 }
 
 export default function ResetPasswordPage() {
+  useDocumentTitle('Reset Password');
   const { uid, token } = useParams<{ uid: string; token: string }>();
   const navigate = useNavigate();
 

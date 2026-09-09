@@ -1,9 +1,11 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { isValidEmail, isValidPassword } from '../../utils/validateForm';
 
 export default function RegisterPage() {
+  useDocumentTitle('Create Account');
   const { register } = useAuth();
   const navigate = useNavigate();
 
