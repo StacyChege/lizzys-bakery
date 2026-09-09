@@ -137,7 +137,7 @@ export default function StaffPage() {
         </p>
         <div className="bg-white rounded-2xl shadow-md p-6 text-left border-t-4 border-bakery-pink-dark">
           {finalSummary.sales.length === 0 ? (
-            <p className="text-bakery-brown/50 text-sm">No sales logged this shift.</p>
+            <p className="text-bakery-brown/70 text-sm">No sales logged this shift.</p>
           ) : (
             <ul className="space-y-1 mb-4">
               {finalSummary.sales.map((s) => (
@@ -175,8 +175,9 @@ export default function StaffPage() {
         <form onSubmit={handleClockIn} className="relative bg-white rounded-3xl shadow-lg p-6 pt-8 border-2 border-dashed border-bakery-pink/40 space-y-4">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-bakery-pink-dark shadow-md" />
           <div>
-            <label className="block text-sm font-medium text-bakery-brown mb-1">Who are you?</label>
+            <label htmlFor="staff-select" className="block text-sm font-medium text-bakery-brown mb-1">Who are you?</label>
             <select
+              id="staff-select"
               value={selectedStaffId ?? ''}
               onChange={(e) => setSelectedStaffId(e.target.value ? Number(e.target.value) : null)}
               className="w-full border border-bakery-pink/30 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-bakery-pink"
@@ -188,8 +189,9 @@ export default function StaffPage() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-bakery-brown mb-1">PIN</label>
+            <label htmlFor="staff-pin" className="block text-sm font-medium text-bakery-brown mb-1">PIN</label>
             <input
+              id="staff-pin"
               type="password"
               inputMode="numeric"
               value={pin}
@@ -221,7 +223,7 @@ export default function StaffPage() {
         <h1 className="font-script text-3xl text-bakery-pink-dark">Hi, {staffName}</h1>
         <button
           onClick={handleClockOut}
-          className="text-sm text-bakery-brown/60 hover:text-red-500 border border-bakery-pink/30 rounded-full px-4 py-1.5 bg-white"
+          className="text-sm text-bakery-brown/70 hover:text-red-500 border border-bakery-pink/30 rounded-full px-4 py-1.5 bg-white"
         >
           Clock Out
         </button>
@@ -236,6 +238,7 @@ export default function StaffPage() {
         <h2 className="font-semibold text-bakery-brown mb-3">Set Today's Stock</h2>
         <form onSubmit={handleSetStock} className="flex gap-2">
           <select
+            aria-label="Item to stock"
             value={stockProductId}
             onChange={(e) => setStockProductId(e.target.value ? Number(e.target.value) : '')}
             className="flex-1 border border-bakery-pink/30 rounded-lg px-3 py-2 text-sm"
@@ -249,6 +252,7 @@ export default function StaffPage() {
             type="number"
             min="0"
             placeholder="Qty"
+            aria-label="Quantity stocked"
             value={stockQuantity}
             onChange={(e) => setStockQuantity(e.target.value)}
             className="w-20 border border-bakery-pink/30 rounded-lg px-3 py-2 text-sm"
@@ -266,7 +270,7 @@ export default function StaffPage() {
             {todayStock.map((s) => (
               <li key={s.id} className="flex justify-between text-bakery-brown">
                 <span>{s.product_name}</span>
-                <span className="text-bakery-brown/60">
+                <span className="text-bakery-brown/70">
                   {s.quantity_remaining} left of {s.quantity_stocked}
                 </span>
               </li>
@@ -279,10 +283,11 @@ export default function StaffPage() {
       <div className="bg-white rounded-2xl shadow-sm p-5 mb-6 border-t-4 border-bakery-brown">
         <h2 className="font-semibold text-bakery-brown mb-3">Log a Sale</h2>
         {stockedProductIds.size === 0 ? (
-          <p className="text-sm text-bakery-brown/50">Set today's stock above before logging sales.</p>
+          <p className="text-sm text-bakery-brown/70">Set today's stock above before logging sales.</p>
         ) : (
           <form onSubmit={handleLogSale} className="flex gap-2">
             <select
+              aria-label="Item sold"
               value={saleProductId}
               onChange={(e) => setSaleProductId(e.target.value ? Number(e.target.value) : '')}
               className="flex-1 border border-bakery-pink/30 rounded-lg px-3 py-2 text-sm"
@@ -297,6 +302,7 @@ export default function StaffPage() {
             <input
               type="number"
               min="1"
+              aria-label="Quantity sold"
               value={saleQuantity}
               onChange={(e) => setSaleQuantity(e.target.value)}
               className="w-20 border border-bakery-pink/30 rounded-lg px-3 py-2 text-sm"
@@ -315,7 +321,7 @@ export default function StaffPage() {
       <div className="bg-white rounded-2xl shadow-sm p-5 border-t-4 border-bakery-pink">
         <h2 className="font-semibold text-bakery-brown mb-3">Your Sales Today</h2>
         {!shift || shift.sales.length === 0 ? (
-          <p className="text-sm text-bakery-brown/50">No sales logged yet this shift.</p>
+          <p className="text-sm text-bakery-brown/70">No sales logged yet this shift.</p>
         ) : (
           <>
             <ul className="space-y-1 mb-3 text-sm">
