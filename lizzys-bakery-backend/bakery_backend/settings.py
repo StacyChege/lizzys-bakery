@@ -127,7 +127,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# The bakery and every customer are in Kenya. USE_TZ still stores all
+# datetimes as UTC in the database — this only sets how "local" is
+# interpreted, which matters for timezone.localdate(): it decides which
+# day staff stock/sales get filed under, the earliest date an order can
+# be placed for, and which dates the blocked-date calendar treats as past.
+# At UTC those all roll over at 3am Nairobi. (tzdata is in requirements.)
+TIME_ZONE = 'Africa/Nairobi'
 
 USE_I18N = True
 
