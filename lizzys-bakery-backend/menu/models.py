@@ -125,3 +125,21 @@ class CustomCakeReferenceImage(models.Model):
 
     def __str__(self):
         return f'Reference image for {self.request.name}'
+
+
+class Testimonial(models.Model):
+    # Homepage social proof — seeded and curated by the baker in the admin,
+    # not a public review system (PRD F11). is_published lets her draft or
+    # temporarily hide one without deleting it.
+    author_name = models.CharField(max_length=100)
+    quote = models.TextField()
+    occasion = models.CharField(max_length=120, blank=True)  # e.g. "Wedding cake, June 2026"
+    is_published = models.BooleanField(default=True)
+    sort_order = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['sort_order', '-created_at']
+
+    def __str__(self):
+        return f'{self.author_name}: {self.quote[:40]}'
