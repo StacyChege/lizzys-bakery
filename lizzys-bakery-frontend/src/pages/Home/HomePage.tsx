@@ -1,11 +1,20 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Cake, Heart, Sparkles } from 'lucide-react';
+import { Cake, Heart, Sparkles, Quote } from 'lucide-react';
 import ScallopDivider from '../../components/ScallopDivider';
 import heroImage from '../../assets/hero-cake-coffee.jpg';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
+import { fetchTestimonials } from '../../api/testimonials';
+import type Testimonial from '../../types/Testimonial';
 
 export default function HomePage() {
   useDocumentTitle('');
+
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+
+  useEffect(() => {
+    fetchTestimonials().then(setTestimonials).catch(() => {});
+  }, []);
 
   return (
     <div className="font-body">
@@ -78,6 +87,34 @@ export default function HomePage() {
           </p>
         </div>
       </div>
+
+      {/* ---------- TESTIMONIALS ---------- */}
+      {testimonials.length > 0 && (
+        <div className="bg-bakery-pink/10 py-14">
+          <div className="max-w-5xl mx-auto px-4">
+            <h2 className="font-script text-4xl text-bakery-pink-dark text-center mb-10">
+              Sweet Words From Our Customers
+            </h2>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {testimonials.map((t) => (
+                <figure
+                  key={t.id}
+                  className="bg-white rounded-2xl shadow-sm p-6 border-t-4 border-bakery-pink flex flex-col"
+                >
+                  <Quote className="w-6 h-6 text-bakery-pink-dark/40 mb-3" strokeWidth={1.5} />
+                  <blockquote className="text-bakery-brown/80 text-sm grow">"{t.quote}"</blockquote>
+                  <figcaption className="mt-4 pt-3 border-t border-bakery-cream">
+                    <span className="font-semibold text-bakery-brown text-sm">{t.author_name}</span>
+                    {t.occasion && (
+                      <span className="block text-xs text-bakery-brown/70">{t.occasion}</span>
+                    )}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
