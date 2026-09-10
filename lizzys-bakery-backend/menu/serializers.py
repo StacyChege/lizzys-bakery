@@ -3,7 +3,14 @@ from datetime import timedelta
 from django.utils import timezone
 from rest_framework import serializers
 from orders.models import BlockedDate
-from .models import Category, CustomCakeReferenceImage, CustomCakeRequest, Product, ProductImage
+from .models import (
+    Category,
+    CustomCakeReferenceImage,
+    CustomCakeRequest,
+    Product,
+    ProductImage,
+    Testimonial,
+)
 
 MIN_LEAD_DAYS = 5
 
@@ -12,6 +19,20 @@ class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
         fields = ['id', 'image', 'sort_order']
+
+
+class TestimonialSerializer(serializers.ModelSerializer):
+    # Public — only the fields shown on the homepage card.
+    class Meta:
+        model = Testimonial
+        fields = ['id', 'author_name', 'quote', 'occasion']
+
+
+class AdminTestimonialSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Testimonial
+        fields = ['id', 'author_name', 'quote', 'occasion', 'is_published', 'sort_order', 'created_at']
+        read_only_fields = ['created_at']
 
 
 class CategorySerializer(serializers.ModelSerializer):
