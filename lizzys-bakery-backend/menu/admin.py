@@ -1,5 +1,12 @@
 from django.contrib import admin
-from .models import Category, CustomCakeReferenceImage, CustomCakeRequest, Product, ProductImage
+from .models import (
+    Category,
+    CustomCakeReferenceImage,
+    CustomCakeRequest,
+    Product,
+    ProductImage,
+    Testimonial,
+)
 
 
 class ProductImageInline(admin.TabularInline):
@@ -38,3 +45,12 @@ class CustomCakeRequestAdmin(admin.ModelAdmin):
     search_fields = ['name', 'email', 'phone_number', 'special_notes']
     readonly_fields = ['created_at']
     inlines = [CustomCakeReferenceImageInline]
+
+
+@admin.register(Testimonial)
+class TestimonialAdmin(admin.ModelAdmin):
+    list_display = ['author_name', 'occasion', 'is_published', 'sort_order', 'created_at']
+    list_filter = ['is_published']
+    list_editable = ['is_published', 'sort_order']
+    search_fields = ['author_name', 'quote']
+    readonly_fields = ['created_at']
