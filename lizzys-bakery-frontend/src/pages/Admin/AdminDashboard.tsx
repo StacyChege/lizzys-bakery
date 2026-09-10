@@ -49,6 +49,12 @@ export default function AdminDashboard() {
             Cake Requests
           </Link>
           <Link
+            to="/admin/testimonials"
+            className="bg-white text-bakery-pink-dark border-2 border-bakery-pink-dark font-semibold px-5 py-2 rounded-full hover:bg-bakery-pink/10 transition-colors text-sm"
+          >
+            Testimonials
+          </Link>
+          <Link
             to="/admin/menu"
             className="bg-bakery-pink-dark text-white font-semibold px-5 py-2 rounded-full hover:bg-bakery-brown transition-colors text-sm"
           >

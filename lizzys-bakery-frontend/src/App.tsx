@@ -18,6 +18,7 @@ import MenuManagementPage from './pages/Admin/MenuManagementPage';
 import CheckoutPage from './pages/Checkout/CheckoutPage';
 import OrdersPage from './pages/Admin/OrdersPage';
 import CustomCakeRequestsPage from './pages/Admin/CustomCakeRequestsPage';
+import TestimonialsPage from './pages/Admin/TestimonialsPage';
 import LocationPage from './pages/Location/LocationPage';
 import NotFoundPage from './pages/NotFound/NotFoundPage';
 
@@ -73,6 +74,14 @@ function App() {
             element={
               <ProtectedRoute requiredRole="ADMIN">
                 <CustomCakeRequestsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/testimonials"
+            element={
+              <ProtectedRoute requiredRole="ADMIN">
+                <TestimonialsPage />
               </ProtectedRoute>
             }
           />
