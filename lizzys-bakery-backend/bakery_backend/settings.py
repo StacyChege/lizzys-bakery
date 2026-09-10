@@ -98,7 +98,12 @@ DATABASES = {
     'default': dj_database_url.config(
         default=config('DATABASE_URL'),
         conn_max_age=600,
-        ssl_require=True
+        # Managed Postgres (Neon, Supabase, Railway, RDS, …) requires SSL.
+        # A Postgres container on the same private network as this app — e.g.
+        # a database created inside Dokploy — usually has none, and the
+        # connection then fails with "server does not support SSL". Set
+        # DATABASE_SSL=False in that case.
+        ssl_require=config('DATABASE_SSL', default=True, cast=bool),
     )
 }
 
