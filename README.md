@@ -12,6 +12,8 @@ lizzys-bakery/
 
 Each app keeps its own dependencies, config, and `.env` file in its own folder.
 
+Deploying to production is documented in [`DEPLOY.md`](DEPLOY.md).
+
 ## Setup
 
 **Frontend**
