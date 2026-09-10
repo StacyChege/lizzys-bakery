@@ -94,16 +94,21 @@ WSGI_APPLICATION = 'bakery_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+_database_url = config('DATABASE_URL')
 DATABASES = {
     'default': dj_database_url.config(
-        default=config('DATABASE_URL'),
+        default=_database_url,
         conn_max_age=600,
         # Managed Postgres (Neon, Supabase, Railway, RDS, …) requires SSL.
         # A Postgres container on the same private network as this app — e.g.
         # a database created inside Dokploy — usually has none, and the
         # connection then fails with "server does not support SSL". Set
-        # DATABASE_SSL=False in that case.
-        ssl_require=config('DATABASE_SSL', default=True, cast=bool),
+        # DATABASE_SSL=False in that case. Only ever applied to Postgres —
+        # sqlite (used by the test runner) rejects an sslmode argument.
+        ssl_require=(
+            config('DATABASE_SSL', default=True, cast=bool)
+            and _database_url.startswith(('postgres://', 'postgresql://', 'postgis://'))
+        ),
     )
 }
 
