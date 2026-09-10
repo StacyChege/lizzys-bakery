@@ -29,6 +29,19 @@ services:
       - media:/app/media
     expose:
       - "8000"
+    # /api/health/ returns 503 until the database is reachable, so this also
+    # gates the container as unhealthy through a bad DB connection, not just
+    # a dead process. python + urllib are already in the image — no curl.
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/api/health/').status == 200 else 1)"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
 
   frontend:
     image: ghcr.io/stacychege/lizzys-bakery-frontend:latest
