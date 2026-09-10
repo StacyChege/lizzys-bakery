@@ -197,10 +197,11 @@ knows exactly what to do next.
 - Status-change notifications (e.g. "Your order is ready for pickup") via email; SMS is a nice-to-have if time allows
   within the schedule.
 
-### F11 — Testimonials / Reviews (stretch, if time allows)
+### F11 — Testimonials / Reviews (stretch — built)
 
 A simple section showing past-customer testimonials on the homepage, matching the friendly, personal tone of the
-brand. Can be seeded by the Admin rather than built as a full public review system, to keep MVP scope realistic.
+brand. Seeded and curated by the Admin (`/admin/testimonials`) rather than built as a full public review system.
+The homepage section hides itself when there are no published testimonials.
 
 ## 4. Non-Functional Requirements
 
