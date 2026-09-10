@@ -4,17 +4,26 @@ from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from .models import Category, CustomCakeReferenceImage, CustomCakeRequest, Product, ProductImage
+from .models import (
+    Category,
+    CustomCakeReferenceImage,
+    CustomCakeRequest,
+    Product,
+    ProductImage,
+    Testimonial,
+)
 from .permissions import IsBakeryAdmin
 from .serializers import (
     AdminCategorySerializer,
     AdminCustomCakeRequestSerializer,
     AdminProductImageUploadSerializer,
     AdminProductSerializer,
+    AdminTestimonialSerializer,
     CategorySerializer,
     CustomCakeRequestSerializer,
     ProductListSerializer,
     ProductDetailSerializer,
+    TestimonialSerializer,
 )
 from .emails import send_custom_cake_confirmation_email, send_custom_cake_status_email
 from .filters import ProductFilter
@@ -38,6 +47,12 @@ class ProductDetailView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductDetailSerializer
     lookup_field = 'slug'  # look up by slug in the URL, not numeric id
+
+
+class TestimonialListView(generics.ListAPIView):
+    # Public — the homepage social-proof section. Only published ones.
+    queryset = Testimonial.objects.filter(is_published=True)
+    serializer_class = TestimonialSerializer
 
 
 class CustomCakeRequestCreateView(generics.CreateAPIView):
@@ -137,3 +152,17 @@ class AdminCustomCakeRequestUpdateView(generics.UpdateAPIView):
         if instance.status != previous_status:
             send_custom_cake_status_email(instance)
         return response
+
+
+class AdminTestimonialListCreateView(generics.ListCreateAPIView):
+    # Unlike the public list, includes unpublished ones so the baker can
+    # see and re-publish them.
+    queryset = Testimonial.objects.all()
+    serializer_class = AdminTestimonialSerializer
+    permission_classes = [IsAuthenticated, IsBakeryAdmin]
+
+
+class AdminTestimonialDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Testimonial.objects.all()
+    serializer_class = AdminTestimonialSerializer
+    permission_classes = [IsAuthenticated, IsBakeryAdmin]

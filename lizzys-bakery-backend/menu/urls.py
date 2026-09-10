@@ -8,10 +8,13 @@ from .views import (
     AdminProductImageDeleteView,
     AdminProductImageUploadView,
     AdminProductListCreateView,
+    AdminTestimonialDetailView,
+    AdminTestimonialListCreateView,
     CategoryListView,
     CustomCakeRequestCreateView,
     ProductListView,
     ProductDetailView,
+    TestimonialListView,
 )
 
 urlpatterns = [
@@ -19,6 +22,7 @@ urlpatterns = [
     path('products/', ProductListView.as_view(), name='product-list'),
     path('products/<slug:slug>/', ProductDetailView.as_view(), name='product-detail'),
     path('custom-cake-requests/', CustomCakeRequestCreateView.as_view(), name='custom-cake-request-create'),
+    path('testimonials/', TestimonialListView.as_view(), name='testimonial-list'),
 
     path('admin/categories/', AdminCategoryListCreateView.as_view(), name='admin-category-list-create'),
     path('admin/categories/<int:pk>/', AdminCategoryDetailView.as_view(), name='admin-category-detail'),
@@ -44,4 +48,6 @@ urlpatterns = [
         AdminCustomCakeRequestUpdateView.as_view(),
         name='admin-custom-cake-request-update',
     ),
+    path('admin/testimonials/', AdminTestimonialListCreateView.as_view(), name='admin-testimonial-list-create'),
+    path('admin/testimonials/<int:pk>/', AdminTestimonialDetailView.as_view(), name='admin-testimonial-detail'),
 ]
