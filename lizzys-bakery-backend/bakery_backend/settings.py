@@ -170,6 +170,27 @@ CSRF_TRUSTED_ORIGINS = config(
 )
 
 
+# --- Production hardening -------------------------------------------------
+# Only applied when DEBUG is off, so plain-HTTP local dev is untouched. In
+# production the app sits behind Dokploy's reverse proxy (Traefik), which
+# terminates TLS and passes the original scheme in X-Forwarded-Proto —
+# without SECURE_PROXY_SSL_HEADER Django thinks every request is insecure
+# and marks the session/CSRF cookies wrong.
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    # Off by default: only turn on once HTTPS is confirmed stable, since a
+    # browser will refuse plain HTTP for this domain for the whole duration.
+    SECURE_HSTS_SECONDS = config('SECURE_HSTS_SECONDS', default=0, cast=int)
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = SECURE_HSTS_SECONDS > 0
+    SECURE_HSTS_PRELOAD = SECURE_HSTS_SECONDS > 0
+    # Traefik already redirects HTTP→HTTPS; leave Django's redirect off
+    # unless explicitly wanted (a misconfigured proxy header loops it).
+    SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
+
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
