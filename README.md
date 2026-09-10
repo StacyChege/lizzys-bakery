@@ -61,3 +61,22 @@ Or run each independently:
 npm run dev:frontend
 npm run dev:backend
 ```
+
+## Tests
+
+Backend (Django test runner, on a throwaway sqlite database):
+
+```
+cd lizzys-bakery-backend
+SECRET_KEY=dev DATABASE_URL=sqlite:///test.db DEBUG=True python manage.py test
+```
+
+The same suite runs in CI on every push to `master` (`.github/workflows/build.yml`)
+and must pass before the Docker images are built.
+
+Frontend type-check:
+
+```
+cd lizzys-bakery-frontend
+npx tsc -b --noEmit
+```
