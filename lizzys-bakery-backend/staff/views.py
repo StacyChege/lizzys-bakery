@@ -77,14 +77,29 @@ class DailyStockView(APIView):
     def post(self, request):
         product_id = request.data.get('product')
         quantity = request.data.get('quantity_stocked')
-        if product_id is None or quantity is None:
+        if product_id is None or quantity in (None, ''):
             return Response(
                 {'detail': 'product and quantity_stocked are required.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        # Hand-rolled endpoint (no serializer) — coerce here so a string
+        # quantity doesn't sail through to the model and then blow up when
+        # DailyStockSerializer does the arithmetic for quantity_remaining.
+        try:
+            quantity = int(quantity)
+        except (TypeError, ValueError):
+            return Response(
+                {'detail': 'quantity_stocked must be a whole number.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if quantity < 0:
+            return Response(
+                {'detail': 'quantity_stocked cannot be negative.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         try:
             product = Product.objects.get(id=product_id)
-        except Product.DoesNotExist:
+        except (Product.DoesNotExist, ValueError):
             return Response({'detail': 'Product not found.'}, status=status.HTTP_404_NOT_FOUND)
 
         stock, _ = DailyStock.objects.update_or_create(
