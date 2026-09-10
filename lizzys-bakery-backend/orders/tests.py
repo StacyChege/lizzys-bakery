@@ -202,3 +202,76 @@ class AdminOrderTests(APITestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.data['orders_this_week'], 1)
         self.assertEqual(Decimal(str(res.data['revenue_this_week'])), Decimal('1000'))
+
+
+class AdminBlockedDateTests(APITestCase):
+    def setUp(self):
+        self.admin = User.objects.create_user(
+            email='admin@example.com', full_name='Baker', password='pw-123456', role=User.ADMIN,
+        )
+        self.customer = User.objects.create_user(
+            email='cust@example.com', full_name='Cust', password='pw-123456',
+        )
+
+    def test_blocking_and_unblocking_a_date(self):
+        self.client.force_authenticate(user=self.admin)
+        the_date = (timezone.localdate() + timedelta(days=14)).isoformat()
+
+        created = self.client.post(
+            reverse('admin-blocked-date-list-create'),
+            {'date': the_date, 'reason': 'Fully booked'}, format='json',
+        )
+        self.assertEqual(created.status_code, 201)
+        self.assertTrue(BlockedDate.objects.filter(date=the_date).exists())
+
+        removed = self.client.delete(
+            reverse('admin-blocked-date-delete', args=[created.data['id']])
+        )
+        self.assertEqual(removed.status_code, 204)
+        self.assertFalse(BlockedDate.objects.filter(date=the_date).exists())
+
+    def test_customers_cannot_block_dates(self):
+        self.client.force_authenticate(user=self.customer)
+        res = self.client.post(
+            reverse('admin-blocked-date-list-create'),
+            {'date': (timezone.localdate() + timedelta(days=14)).isoformat()}, format='json',
+        )
+        self.assertEqual(res.status_code, 403)
+
+
+class AdminUpcomingBookingsTests(APITestCase):
+    url = reverse('admin-upcoming-bookings')
+
+    def setUp(self):
+        self.admin = User.objects.create_user(
+            email='admin@example.com', full_name='Baker', password='pw-123456', role=User.ADMIN,
+        )
+        self.day = timezone.localdate() + timedelta(days=20)
+
+    def test_counts_combine_orders_and_custom_cake_requests(self):
+        from menu.models import CustomCakeRequest
+
+        Order.objects.create(
+            contact_name='O', contact_phone='07', date_needed=self.day,
+            fulfilment_method=Order.PICKUP, subtotal=Decimal('1'), total=Decimal('1'),
+        )
+        Order.objects.create(
+            contact_name='Cancelled', contact_phone='07', date_needed=self.day,
+            fulfilment_method=Order.PICKUP, status=Order.CANCELLED,
+            subtotal=Decimal('1'), total=Decimal('1'),
+        )
+        CustomCakeRequest.objects.create(
+            name='C', email='c@example.com', phone_number='07', date_needed=self.day,
+        )
+        BlockedDate.objects.create(date=self.day, reason='busy')
+
+        self.client.force_authenticate(user=self.admin)
+        res = self.client.get(self.url)
+        self.assertEqual(res.status_code, 200)
+        row = next(r for r in res.data if r['date'] == self.day.isoformat())
+        # 1 active order + 1 cake request; the cancelled order is not counted
+        self.assertEqual(row['order_count'], 2)
+        self.assertTrue(row['is_blocked'])
+
+    def test_requires_admin(self):
+        self.assertEqual(self.client.get(self.url).status_code, 401)
