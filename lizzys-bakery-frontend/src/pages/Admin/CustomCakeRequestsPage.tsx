@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { fetchAdminCustomCakeRequests, updateCustomCakeRequest } from '../../api/adminMenu';
 import { CUSTOM_CAKE_STATUS_LABELS } from '../../types/CustomCakeRequest';
 import type { AdminCustomCakeRequest, CustomCakeRequestStatus } from '../../types/CustomCakeRequest';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import mediaUrl from '../../utils/mediaUrl';
 
 function extractErrorMessage(err: unknown): string {
@@ -20,6 +21,7 @@ function extractErrorMessage(err: unknown): string {
 const STATUS_OPTIONS = Object.keys(CUSTOM_CAKE_STATUS_LABELS) as CustomCakeRequestStatus[];
 
 export default function CustomCakeRequestsPage() {
+  useDocumentTitle('Admin: Custom Cake Requests');
   const [requests, setRequests] = useState<AdminCustomCakeRequest[]>([]);
   const [statusFilter, setStatusFilter] = useState<CustomCakeRequestStatus | ''>('');
   const [isLoading, setIsLoading] = useState(true);

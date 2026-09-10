@@ -3,12 +3,14 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { fetchAdminSummary } from '../../api/staff';
 import { fetchAdminStats } from '../../api/orders';
 import type { AdminDailySummary } from '../../types/StaffShift';
 import type { AdminStats } from '../../types/Order';
 
 export default function AdminDashboard() {
+  useDocumentTitle('Admin Dashboard');
   const { user } = useAuth();
   const [summary, setSummary] = useState<AdminDailySummary | null>(null);
   const [stats, setStats] = useState<AdminStats | null>(null);

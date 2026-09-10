@@ -9,6 +9,7 @@ import {
   logSale,
 } from '../../api/staff';
 import fetchProducts from '../../api/products';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import type { StaffMember, DailyStockItem, ShiftSummary } from '../../types/StaffShift';
 import type Product from '../../types/Product';
 
@@ -29,6 +30,7 @@ function extractErrorMessage(err: unknown): string {
 }
 
 export default function StaffPage() {
+  useDocumentTitle('Staff Clock In');
   const [token, setToken] = useState<string | null>(() => localStorage.getItem(TOKEN_KEY));
   const [staffName, setStaffName] = useState<string | null>(() => localStorage.getItem(NAME_KEY));
 

@@ -12,6 +12,7 @@ import {
   createBlockedDate,
   deleteBlockedDate,
 } from '../../api/orders';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { ORDER_STATUS_LABELS } from '../../types/Order';
 import type {
   AdminBlockedDate,
@@ -35,6 +36,7 @@ function extractErrorMessage(err: unknown): string {
 const STATUS_OPTIONS = Object.keys(ORDER_STATUS_LABELS) as OrderStatus[];
 
 export default function OrdersPage() {
+  useDocumentTitle('Admin: Orders');
   const [orders, setOrders] = useState<Order[]>([]);
   const [zones, setZones] = useState<AdminDeliveryZone[]>([]);
   const [statusFilter, setStatusFilter] = useState<OrderStatus | ''>('');

@@ -14,6 +14,7 @@ import {
 } from '../../api/adminMenu';
 import type Category from '../../types/Category';
 import type AdminProduct from '../../types/AdminProduct';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 import mediaUrl from '../../utils/mediaUrl';
 
 function extractErrorMessage(err: unknown): string {
@@ -49,6 +50,7 @@ const emptyProductForm: ProductFormState = {
 };
 
 export default function MenuManagementPage() {
+  useDocumentTitle('Admin: Menu Management');
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<AdminProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
