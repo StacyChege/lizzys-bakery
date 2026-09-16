@@ -242,6 +242,14 @@ export default function CheckoutPage() {
               </div>
             </div>
 
+            {fulfilmentMethod === 'OWN_DELIVERY' && (
+              <p className="text-xs text-bakery-brown/70 bg-bakery-pink/10 rounded-lg px-3 py-2">
+                We'll hand your order to whoever you send to collect it. Once it's handed over,
+                the bakery is no longer responsible for it — please make sure your rider/courier
+                is someone you trust.
+              </p>
+            )}
+
             {fulfilmentMethod === 'BAKERY_DELIVERY' && (
               <div>
                 <select
