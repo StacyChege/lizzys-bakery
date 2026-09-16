@@ -9,12 +9,31 @@ class ProductFilter(django_filters.FilterSet):
     # ?search=chocolate — case-insensitive partial match on name OR description
     search = django_filters.CharFilter(method='filter_search')
 
+    # ?flavour=vanilla — matches any entry in the available_flavours JSON list.
+    # Filtered in Python rather than a DB lookup: available_flavours is a plain
+    # JSONField list (["Vanilla", "Red Velvet", ...]), and a portable
+    # case-insensitive "any element contains this" query isn't expressible as
+    # a single ORM lookup across both sqlite (tests) and Postgres (prod).
+    # Menu sizes here are small (tens of products), so this is cheap.
+    flavour = django_filters.CharFilter(method='filter_flavour')
+
+    min_price = django_filters.NumberFilter(field_name='base_price', lookup_expr='gte')
+    max_price = django_filters.NumberFilter(field_name='base_price', lookup_expr='lte')
+
     class Meta:
         model = Product
-        fields = ['category', 'search']
+        fields = ['category', 'search', 'flavour', 'min_price', 'max_price']
 
     def filter_search(self, queryset, name, value):
         from django.db.models import Q
         return queryset.filter(
             Q(name__icontains=value) | Q(description__icontains=value)
         )
+
+    def filter_flavour(self, queryset, name, value):
+        needle = value.lower()
+        matching_ids = [
+            product.id for product in queryset
+            if any(needle in (flavour or '').lower() for flavour in product.available_flavours)
+        ]
+        return queryset.filter(id__in=matching_ids)
