@@ -18,6 +18,16 @@ export default function MenuPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>(''); // '' means "All Categories"
   const [searchQuery, setSearchQuery] = useState<string>('');
   const debouncedSearch = useDebounce(searchQuery, 400); // Waits 400ms after user stops typing
+  const [selectedFlavour, setSelectedFlavour] = useState<string>(''); // '' means "Any Flavour"
+  const [minPrice, setMinPrice] = useState<string>('');
+  const [maxPrice, setMaxPrice] = useState<string>('');
+  const debouncedMinPrice = useDebounce(minPrice, 500);
+  const debouncedMaxPrice = useDebounce(maxPrice, 500);
+
+  // The flavour dropdown's options come from the full, unfiltered catalogue
+  // (captured once on initial load below) so the list of choices doesn't
+  // shrink as other filters narrow the results shown on screen.
+  const [flavourOptions, setFlavourOptions] = useState<string[]>([]);
 
   // Loading & Error states
   const [isLoading, setIsLoading] = useState(true); // Initial page load
@@ -34,6 +44,9 @@ export default function MenuPage() {
         ]);
         setCategories(categoriesData);
         setProducts(productsData);
+        const flavours = new Set<string>();
+        productsData.forEach((p) => p.available_flavours.forEach((f) => flavours.add(f)));
+        setFlavourOptions(Array.from(flavours).sort());
       } catch {
         setError('Could not load the menu. Please refresh the page.');
       } finally {
@@ -44,7 +57,7 @@ export default function MenuPage() {
     loadInitialData();
   }, []);
 
-  // --- 2. FILTERED FETCH (Runs whenever selectedCategory or debouncedSearch changes) ---
+  // --- 2. FILTERED FETCH (Runs whenever a filter changes) ---
   useEffect(() => {
     // Skip this on the very first mount since loadInitialData already ran above
     if (isLoading) return;
@@ -52,11 +65,13 @@ export default function MenuPage() {
     async function loadFilteredProducts() {
       setIsFiltering(true);
       try {
-        // Send selectedCategory (or undefined if 'All') & debouncedSearch query to Django
-        const filteredData = await fetchProducts(
-          selectedCategory || undefined,
-          debouncedSearch || undefined
-        );
+        const filteredData = await fetchProducts({
+          category: selectedCategory || undefined,
+          search: debouncedSearch || undefined,
+          flavour: selectedFlavour || undefined,
+          minPrice: debouncedMinPrice ? Number(debouncedMinPrice) : undefined,
+          maxPrice: debouncedMaxPrice ? Number(debouncedMaxPrice) : undefined,
+        });
         setProducts(filteredData);
       } catch {
         setError('Failed to fetch filtered products.');
@@ -66,7 +81,19 @@ export default function MenuPage() {
     }
 
     loadFilteredProducts();
-  }, [selectedCategory, debouncedSearch, isLoading]);
+  }, [selectedCategory, debouncedSearch, selectedFlavour, debouncedMinPrice, debouncedMaxPrice, isLoading]);
+
+  const hasActiveFilters = Boolean(
+    selectedCategory || debouncedSearch || selectedFlavour || debouncedMinPrice || debouncedMaxPrice
+  );
+
+  function clearFilters() {
+    setSelectedCategory('');
+    setSearchQuery('');
+    setSelectedFlavour('');
+    setMinPrice('');
+    setMaxPrice('');
+  }
 
   // --- CONDITIONAL RENDERING (Initial Load) ---
   if (isLoading) {
@@ -93,7 +120,7 @@ export default function MenuPage() {
       </h1>
 
       {/* --- SEARCH BAR --- */}
-      <div className="mb-6 max-w-md">
+      <div className="mb-4 max-w-md">
         <input
           type="text"
           placeholder="Search menu items..."
@@ -101,6 +128,67 @@ export default function MenuPage() {
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full border border-bakery-pink/30 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-bakery-pink text-bakery-brown placeholder:text-bakery-brown/40"
         />
+      </div>
+
+      {/* --- FLAVOUR & PRICE FILTERS --- */}
+      <div className="mb-6 flex flex-wrap items-end gap-4">
+        <div>
+          <label htmlFor="flavour-filter" className="block text-xs font-medium text-bakery-brown/70 mb-1">
+            Flavour
+          </label>
+          <select
+            id="flavour-filter"
+            value={selectedFlavour}
+            onChange={(e) => setSelectedFlavour(e.target.value)}
+            className="border border-bakery-pink/30 rounded-xl px-3 py-2 text-sm text-bakery-brown focus:outline-none focus:ring-2 focus:ring-bakery-pink"
+          >
+            <option value="">Any flavour</option>
+            {flavourOptions.map((flavour) => (
+              <option key={flavour} value={flavour}>{flavour}</option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="min-price-filter" className="block text-xs font-medium text-bakery-brown/70 mb-1">
+            Min price (KES)
+          </label>
+          <input
+            id="min-price-filter"
+            type="number"
+            min={0}
+            inputMode="numeric"
+            placeholder="0"
+            value={minPrice}
+            onChange={(e) => setMinPrice(e.target.value)}
+            className="w-28 border border-bakery-pink/30 rounded-xl px-3 py-2 text-sm text-bakery-brown focus:outline-none focus:ring-2 focus:ring-bakery-pink"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="max-price-filter" className="block text-xs font-medium text-bakery-brown/70 mb-1">
+            Max price (KES)
+          </label>
+          <input
+            id="max-price-filter"
+            type="number"
+            min={0}
+            inputMode="numeric"
+            placeholder="Any"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(e.target.value)}
+            className="w-28 border border-bakery-pink/30 rounded-xl px-3 py-2 text-sm text-bakery-brown focus:outline-none focus:ring-2 focus:ring-bakery-pink"
+          />
+        </div>
+
+        {hasActiveFilters && (
+          <button
+            onClick={clearFilters}
+            className="text-sm text-bakery-pink-dark hover:underline pb-2.5"
+          >
+            Clear filters
+          </button>
+        )}
       </div>
 
       {/* --- CATEGORY FILTER PILLS (Mobile horizontal scroll enabled) --- */}
@@ -149,6 +237,8 @@ export default function MenuPage() {
           <p className="text-bakery-brown/70">
             {debouncedSearch
               ? `No treats matching "${debouncedSearch}". Try a different search.`
+              : hasActiveFilters
+              ? "Nothing matches those filters — try widening your search."
               : selectedCategory
               ? "No products in this category right now — check back soon."
               : "The menu is empty. Please check back later."}
