@@ -48,7 +48,10 @@ class ProductListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['id', 'name', 'slug', 'category', 'base_price', 'main_image', 'is_available']
+        fields = [
+            'id', 'name', 'slug', 'category', 'base_price', 'main_image',
+            'is_available', 'available_flavours',
+        ]
 
     def get_main_image(self, obj):
         first_image = obj.images.first()  # relies on ProductImage's Meta ordering = ['sort_order']
