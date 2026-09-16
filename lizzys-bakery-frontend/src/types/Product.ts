@@ -9,6 +9,7 @@ export default interface Product {
   base_price: string;  // Decimal serialized as string by DRF
   main_image: string | null;
   is_available: boolean;
+  available_flavours: string[];
 }
 
 // Matches ProductImage model — one photo in a product's gallery
