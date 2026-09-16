@@ -23,10 +23,11 @@ class MenuBase(APITestCase):
         self.pastries = Category.objects.create(name='Pastries', sort_order=2)
         self.red_velvet = Product.objects.create(
             category=self.cakes, name='Red Velvet', base_price=Decimal('2500'),
-            description='rich chocolate crumb',
+            description='rich chocolate crumb', available_flavours=['Red Velvet', 'Chocolate'],
         )
         self.croissant = Product.objects.create(
             category=self.pastries, name='Butter Croissant', base_price=Decimal('150'),
+            available_flavours=['Plain', 'Almond'],
         )
         self.sold_out = Product.objects.create(
             category=self.pastries, name='Sold Out Bun', base_price=Decimal('100'),
@@ -60,6 +61,23 @@ class PublicMenuTests(MenuBase):
     def test_product_list_search_matches_name_or_description(self):
         res = self.client.get(reverse('product-list'), {'search': 'chocolate'})
         self.assertEqual([p['name'] for p in res.data], ['Red Velvet'])
+
+    def test_product_list_includes_available_flavours(self):
+        res = self.client.get(reverse('product-list'))
+        red_velvet = next(p for p in res.data if p['name'] == 'Red Velvet')
+        self.assertEqual(red_velvet['available_flavours'], ['Red Velvet', 'Chocolate'])
+
+    def test_product_list_filters_by_flavour_case_insensitively(self):
+        res = self.client.get(reverse('product-list'), {'flavour': 'almond'})
+        self.assertEqual([p['name'] for p in res.data], ['Butter Croissant'])
+
+    def test_product_list_filters_by_price_range(self):
+        res = self.client.get(reverse('product-list'), {'min_price': '1000', 'max_price': '3000'})
+        self.assertEqual([p['name'] for p in res.data], ['Red Velvet'])
+
+    def test_product_list_price_and_flavour_filters_combine(self):
+        res = self.client.get(reverse('product-list'), {'flavour': 'chocolate', 'max_price': '100'})
+        self.assertEqual(res.data, [])
 
     def test_product_detail_is_looked_up_by_slug(self):
         res = self.client.get(reverse('product-detail', args=[self.red_velvet.slug]))
