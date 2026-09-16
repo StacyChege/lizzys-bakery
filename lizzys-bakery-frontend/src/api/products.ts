@@ -2,12 +2,25 @@ import axiosInstance from './axiosInstance';
 import type Product from '../types/Product';
 import type { ProductDetail } from '../types/Product';
 
-// category and search are both optional — if you don't pass them, we fetch everything.
-// This one function will be reused for both Hr 1 (no filters) and Hr 2 (with filters).
-export default async function fetchProducts(category?: string, search?: string): Promise<Product[]> {
+export interface ProductFilters {
+  category?: string;
+  search?: string;
+  flavour?: string;
+  minPrice?: number;
+  maxPrice?: number;
+}
+
+// All filters are optional — call with nothing to fetch everything.
+export default async function fetchProducts(filters: ProductFilters = {}): Promise<Product[]> {
   // Added 'menu/' prefix to match Django's main urls.py path('api/menu/', ...)
   const response = await axiosInstance.get<Product[]>('/menu/products/', {
-    params: { category, search },
+    params: {
+      category: filters.category,
+      search: filters.search,
+      flavour: filters.flavour,
+      min_price: filters.minPrice,
+      max_price: filters.maxPrice,
+    },
   });
   return response.data;
 }
