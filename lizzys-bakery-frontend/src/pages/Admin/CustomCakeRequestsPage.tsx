@@ -24,31 +24,38 @@ export default function CustomCakeRequestsPage() {
   useDocumentTitle('Admin: Custom Cake Requests');
   const [requests, setRequests] = useState<AdminCustomCakeRequest[]>([]);
   const [statusFilter, setStatusFilter] = useState<CustomCakeRequestStatus | ''>('');
+  const [dateFilter, setDateFilter] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [quoteDrafts, setQuoteDrafts] = useState<Record<number, string>>({});
 
-  const loadRequests = useCallback((status: CustomCakeRequestStatus | '') => {
-    fetchAdminCustomCakeRequests(status || undefined)
+  const loadRequests = useCallback((status: CustomCakeRequestStatus | '', dateNeeded: string) => {
+    fetchAdminCustomCakeRequests({ status: status || undefined, dateNeeded: dateNeeded || undefined })
       .then(setRequests)
       .catch(() => setError('Could not load custom cake requests.'))
       .finally(() => setIsLoading(false));
   }, []);
 
   useEffect(() => {
-    loadRequests('');
+    loadRequests('', '');
   }, [loadRequests]);
 
-  function handleFilterChange(status: CustomCakeRequestStatus | '') {
+  function handleStatusFilterChange(status: CustomCakeRequestStatus | '') {
     setStatusFilter(status);
     setIsLoading(true);
-    loadRequests(status);
+    loadRequests(status, dateFilter);
+  }
+
+  function handleDateFilterChange(date: string) {
+    setDateFilter(date);
+    setIsLoading(true);
+    loadRequests(statusFilter, date);
   }
 
   async function handleStatusChange(request: AdminCustomCakeRequest, status: CustomCakeRequestStatus) {
     try {
       await updateCustomCakeRequest(request.id, { status });
-      loadRequests(statusFilter);
+      loadRequests(statusFilter, dateFilter);
     } catch (err) {
       toast.error(extractErrorMessage(err));
     }
@@ -60,7 +67,7 @@ export default function CustomCakeRequestsPage() {
     try {
       await updateCustomCakeRequest(request.id, { quoted_price: price, status: 'QUOTED' });
       setQuoteDrafts((d) => ({ ...d, [request.id]: '' }));
-      loadRequests(statusFilter);
+      loadRequests(statusFilter, dateFilter);
       toast.success('Quote saved');
     } catch (err) {
       toast.error(extractErrorMessage(err));
@@ -83,19 +90,36 @@ export default function CustomCakeRequestsPage() {
           <p className="text-red-600">{error}</p>
         ) : (
           <div className="bg-white rounded-2xl shadow-sm p-5 border-t-4 border-bakery-pink-dark">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
               <h2 className="font-semibold text-bakery-brown">All Requests</h2>
-              <select
-                aria-label="Filter requests by status"
-                value={statusFilter}
-                onChange={(e) => handleFilterChange(e.target.value as CustomCakeRequestStatus | '')}
-                className="border border-bakery-pink/30 rounded-lg px-3 py-1.5 text-sm"
-              >
-                <option value="">All statuses</option>
-                {STATUS_OPTIONS.map((s) => (
-                  <option key={s} value={s}>{CUSTOM_CAKE_STATUS_LABELS[s]}</option>
-                ))}
-              </select>
+              <div className="flex flex-wrap items-center gap-2">
+                <input
+                  type="date"
+                  aria-label="Filter requests by date needed"
+                  value={dateFilter}
+                  onChange={(e) => handleDateFilterChange(e.target.value)}
+                  className="border border-bakery-pink/30 rounded-lg px-3 py-1.5 text-sm"
+                />
+                {dateFilter && (
+                  <button
+                    onClick={() => handleDateFilterChange('')}
+                    className="text-xs text-bakery-pink-dark hover:underline"
+                  >
+                    Clear date
+                  </button>
+                )}
+                <select
+                  aria-label="Filter requests by status"
+                  value={statusFilter}
+                  onChange={(e) => handleStatusFilterChange(e.target.value as CustomCakeRequestStatus | '')}
+                  className="border border-bakery-pink/30 rounded-lg px-3 py-1.5 text-sm"
+                >
+                  <option value="">All statuses</option>
+                  {STATUS_OPTIONS.map((s) => (
+                    <option key={s} value={s}>{CUSTOM_CAKE_STATUS_LABELS[s]}</option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             {requests.length === 0 ? (
