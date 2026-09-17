@@ -9,6 +9,7 @@ from .models import (
     CustomCakeRequest,
     Product,
     ProductImage,
+    SiteSettings,
     Testimonial,
 )
 
@@ -33,6 +34,21 @@ class AdminTestimonialSerializer(serializers.ModelSerializer):
         model = Testimonial
         fields = ['id', 'author_name', 'quote', 'occasion', 'is_published', 'sort_order', 'created_at']
         read_only_fields = ['created_at']
+
+
+class SiteSettingsSerializer(serializers.ModelSerializer):
+    # Public — read-only. A null hero_image means "use the site's bundled
+    # default photo," handled on the frontend.
+    class Meta:
+        model = SiteSettings
+        fields = ['hero_image']
+
+
+class AdminSiteSettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SiteSettings
+        fields = ['hero_image', 'updated_at']
+        read_only_fields = ['updated_at']
 
 
 class CategorySerializer(serializers.ModelSerializer):
