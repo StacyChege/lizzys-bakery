@@ -1,11 +1,14 @@
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.dateparse import parse_date
 from rest_framework import generics, status
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from menu.models import Product
+from menu.serializers import AdminProductImageUploadSerializer
 from .authentication import ShiftTokenAuthentication
 from .models import ClockRecord, DailyStock, SaleEntry, StaffMember
 from .permissions import IsBakeryAdmin, IsClockedIn
@@ -23,6 +26,23 @@ class StaffRosterView(generics.ListAPIView):
     queryset = StaffMember.objects.filter(is_active=True)
     serializer_class = StaffMemberPublicSerializer
     permission_classes = [AllowAny]
+
+
+class StaffProductPhotoUploadView(generics.CreateAPIView):
+    # Lets whoever is on shift add a photo of a finished product straight
+    # from the kiosk — e.g. a phone photo of today's cake — without needing
+    # the baker's admin login. Deliberately narrow: unlike the admin menu
+    # endpoints, this can only add a photo to an existing product. Price,
+    # description, category, and availability stay admin-only.
+    serializer_class = AdminProductImageUploadSerializer
+    authentication_classes = [ShiftTokenAuthentication]
+    permission_classes = [IsClockedIn]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def perform_create(self, serializer):
+        product = get_object_or_404(Product, pk=self.kwargs['product_id'])
+        next_sort_order = product.images.count()
+        serializer.save(product=product, sort_order=next_sort_order)
 
 
 class ClockInView(APIView):

@@ -6,6 +6,7 @@ from .views import (
     DailyStockView,
     MyShiftView,
     SaleEntryView,
+    StaffProductPhotoUploadView,
     StaffRosterView,
 )
 
@@ -17,4 +18,9 @@ urlpatterns = [
     path('stock/', DailyStockView.as_view(), name='staff-daily-stock'),
     path('sales/', SaleEntryView.as_view(), name='staff-sales'),
     path('summary/', AdminDailySummaryView.as_view(), name='staff-admin-summary'),
+    path(
+        'products/<int:product_id>/photo/',
+        StaffProductPhotoUploadView.as_view(),
+        name='staff-product-photo-upload',
+    ),
 ]
