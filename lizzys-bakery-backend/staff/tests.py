@@ -1,15 +1,24 @@
+import base64
 import uuid
 from decimal import Decimal
 
 from django.contrib.auth import get_user_model
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from django.utils import timezone
 from rest_framework.test import APITestCase
 
-from menu.models import Category, Product
+from menu.models import Category, Product, ProductImage
 from .models import ClockRecord, DailyStock, SaleEntry, StaffMember
 
 User = get_user_model()
+
+# Smallest possible valid PNG (1x1 transparent pixel) — DRF's ImageField
+# actually decodes the upload with Pillow, so an arbitrary byte string
+# won't do.
+ONE_PIXEL_PNG = base64.b64decode(
+    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='
+)
 
 
 class StaffTestBase(APITestCase):
@@ -85,6 +94,51 @@ class ClockOutTests(StaffTestBase):
         self.assertEqual(res.status_code, 200)
         shift.refresh_from_db()
         self.assertIsNotNone(shift.clock_out)
+
+
+class ProductPhotoUploadTests(StaffTestBase):
+    def url(self, product=None):
+        return reverse('staff-product-photo-upload', args=[(product or self.scone).id])
+
+    def _photo(self, name='cake.png'):
+        return SimpleUploadedFile(name, ONE_PIXEL_PNG, content_type='image/png')
+
+    def test_requires_a_clocked_in_shift(self):
+        res = self.client.post(self.url(), {'image': self._photo()}, format='multipart')
+        self.assertEqual(res.status_code, 401)
+
+    def test_uploads_a_photo_to_an_existing_product(self):
+        self.open_shift()
+        res = self.client.post(self.url(), {'image': self._photo()}, format='multipart')
+        self.assertEqual(res.status_code, 201)
+        image = ProductImage.objects.get()
+        self.assertEqual(image.product, self.scone)
+        self.assertEqual(image.sort_order, 0)
+
+    def test_second_photo_is_appended_after_the_first(self):
+        self.open_shift()
+        self.client.post(self.url(), {'image': self._photo('one.png')}, format='multipart')
+        self.client.post(self.url(), {'image': self._photo('two.png')}, format='multipart')
+        sort_orders = sorted(ProductImage.objects.values_list('sort_order', flat=True))
+        self.assertEqual(sort_orders, [0, 1])
+
+    def test_cannot_upload_to_a_menu_field_other_than_the_photo(self):
+        # This endpoint only accepts an image — price/description/category
+        # stay admin-only, enforced by AdminProductImageUploadSerializer's
+        # field list rather than anything staff-specific.
+        self.open_shift()
+        res = self.client.post(
+            self.url(), {'image': self._photo(), 'name': 'Hacked Name'}, format='multipart',
+        )
+        self.assertEqual(res.status_code, 201)
+        self.scone.refresh_from_db()
+        self.assertEqual(self.scone.name, 'Scone')
+
+    def test_unknown_product_is_404(self):
+        self.open_shift()
+        url = reverse('staff-product-photo-upload', args=[999999])
+        res = self.client.post(url, {'image': self._photo()}, format='multipart')
+        self.assertEqual(res.status_code, 404)
 
 
 class DailyStockTests(StaffTestBase):
