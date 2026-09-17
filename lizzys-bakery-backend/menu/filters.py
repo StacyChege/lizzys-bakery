@@ -1,5 +1,5 @@
 import django_filters
-from .models import Product
+from .models import CustomCakeRequest, Product
 
 
 class ProductFilter(django_filters.FilterSet):
@@ -49,3 +49,15 @@ class ProductFilter(django_filters.FilterSet):
             if any(needle in (flavour or '').lower() for flavour in product.available_flavours)
         ]
         return queryset.filter(id__in=matching_ids)
+
+
+class CustomCakeRequestFilter(django_filters.FilterSet):
+    # PRD F8 groups custom cake requests with the order inbox under the same
+    # "filterable by status and date" requirement.
+    date_needed = django_filters.DateFilter(field_name='date_needed', lookup_expr='exact')
+    date_from = django_filters.DateFilter(field_name='date_needed', lookup_expr='gte')
+    date_to = django_filters.DateFilter(field_name='date_needed', lookup_expr='lte')
+
+    class Meta:
+        model = CustomCakeRequest
+        fields = ['status', 'date_needed', 'date_from', 'date_to']

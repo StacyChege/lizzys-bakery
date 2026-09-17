@@ -29,7 +29,7 @@ from .serializers import (
     TestimonialSerializer,
 )
 from .emails import send_custom_cake_confirmation_email, send_custom_cake_status_email
-from .filters import ProductFilter
+from .filters import CustomCakeRequestFilter, ProductFilter
 
 MAX_REFERENCE_IMAGES = 3
 
@@ -137,7 +137,7 @@ class AdminCustomCakeRequestListView(generics.ListAPIView):
     serializer_class = AdminCustomCakeRequestSerializer
     permission_classes = [IsAuthenticated, IsBakeryAdmin]
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['status']
+    filterset_class = CustomCakeRequestFilter
 
 
 class AdminCustomCakeRequestUpdateView(generics.UpdateAPIView):
