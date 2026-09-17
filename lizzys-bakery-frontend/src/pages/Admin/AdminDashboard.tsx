@@ -2,30 +2,73 @@
 // order management (/admin/orders), and basic sales stats.
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { useAuth } from '../../hooks/useAuth';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { fetchAdminSummary } from '../../api/staff';
 import { fetchAdminStats } from '../../api/orders';
+import { fetchAdminSiteSettings, updateHeroImage, resetHeroImage } from '../../api/siteSettings';
+import mediaUrl from '../../utils/mediaUrl';
+import defaultHeroImage from '../../assets/hero-cake-coffee.jpg';
 import type { AdminDailySummary } from '../../types/StaffShift';
 import type { AdminStats } from '../../types/Order';
+import type SiteSettings from '../../types/SiteSettings';
+
+function extractErrorMessage(err: unknown): string {
+  if (typeof err === 'object' && err !== null && 'response' in err) {
+    const data = (err as { response?: { data?: unknown } }).response?.data;
+    if (data && typeof data === 'object') {
+      const firstValue = Object.values(data as Record<string, unknown>)[0];
+      if (Array.isArray(firstValue) && typeof firstValue[0] === 'string') return firstValue[0];
+    }
+  }
+  return 'Something went wrong. Please try again.';
+}
 
 export default function AdminDashboard() {
   useDocumentTitle('Admin Dashboard');
   const { user } = useAuth();
   const [summary, setSummary] = useState<AdminDailySummary | null>(null);
   const [stats, setStats] = useState<AdminStats | null>(null);
+  const [heroSettings, setHeroSettings] = useState<SiteSettings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isUpdatingHero, setIsUpdatingHero] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    Promise.all([fetchAdminSummary(), fetchAdminStats()])
-      .then(([s, st]) => {
+    Promise.all([fetchAdminSummary(), fetchAdminStats(), fetchAdminSiteSettings()])
+      .then(([s, st, site]) => {
         setSummary(s);
         setStats(st);
+        setHeroSettings(site);
       })
       .catch(() => setError('Could not load dashboard data.'))
       .finally(() => setIsLoading(false));
   }, []);
+
+  async function handleHeroUpload(file: File) {
+    setIsUpdatingHero(true);
+    try {
+      setHeroSettings(await updateHeroImage(file));
+      toast.success('Homepage background updated');
+    } catch (err) {
+      toast.error(extractErrorMessage(err));
+    } finally {
+      setIsUpdatingHero(false);
+    }
+  }
+
+  async function handleHeroReset() {
+    setIsUpdatingHero(true);
+    try {
+      setHeroSettings(await resetHeroImage());
+      toast.success('Back to the default photo');
+    } catch (err) {
+      toast.error(extractErrorMessage(err));
+    } finally {
+      setIsUpdatingHero(false);
+    }
+  }
 
   return (
     <div className="min-h-screen py-10 px-4">
@@ -69,6 +112,47 @@ export default function AdminDashboard() {
         <p className="text-red-600">{error}</p>
       ) : (
         <>
+          <div className="bg-white rounded-2xl shadow-sm p-5 mb-8 border-t-4 border-bakery-pink">
+            <h2 className="font-semibold text-bakery-brown mb-1">Homepage Background Photo</h2>
+            <p className="text-xs text-bakery-brown/70 mb-3">
+              Shown behind the hero on the homepage. Swap it for a seasonal theme — Christmas,
+              Thanksgiving, or anything else — any time.
+            </p>
+            <div className="flex items-center gap-4 flex-wrap">
+              <img
+                src={mediaUrl(heroSettings?.hero_image) ?? defaultHeroImage}
+                alt="Current homepage background"
+                className="w-32 h-20 object-cover rounded-lg border border-bakery-pink/30"
+              />
+              <div className="flex flex-col gap-2">
+                <label className="text-sm text-bakery-pink-dark font-medium cursor-pointer">
+                  {heroSettings?.hero_image ? 'Replace photo' : 'Upload a photo'}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    disabled={isUpdatingHero}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleHeroUpload(file);
+                      e.target.value = '';
+                    }}
+                    className="hidden"
+                  />
+                </label>
+                {heroSettings?.hero_image && (
+                  <button
+                    onClick={handleHeroReset}
+                    disabled={isUpdatingHero}
+                    className="text-sm text-bakery-brown/70 hover:text-red-500 text-left"
+                  >
+                    Reset to default photo
+                  </button>
+                )}
+                {isUpdatingHero && <p className="text-xs text-bakery-brown/70">Updating…</p>}
+              </div>
+            </div>
+          </div>
+
           {stats && (
             <div className="mb-8">
               <h2 className="font-semibold text-bakery-brown text-lg mb-4">Stats</h2>
