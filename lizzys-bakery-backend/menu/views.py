@@ -10,6 +10,7 @@ from .models import (
     CustomCakeRequest,
     Product,
     ProductImage,
+    SiteSettings,
     Testimonial,
 )
 from .permissions import IsBakeryAdmin
@@ -18,11 +19,13 @@ from .serializers import (
     AdminCustomCakeRequestSerializer,
     AdminProductImageUploadSerializer,
     AdminProductSerializer,
+    AdminSiteSettingsSerializer,
     AdminTestimonialSerializer,
     CategorySerializer,
     CustomCakeRequestSerializer,
     ProductListSerializer,
     ProductDetailSerializer,
+    SiteSettingsSerializer,
     TestimonialSerializer,
 )
 from .emails import send_custom_cake_confirmation_email, send_custom_cake_status_email
@@ -166,3 +169,34 @@ class AdminTestimonialDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Testimonial.objects.all()
     serializer_class = AdminTestimonialSerializer
     permission_classes = [IsAuthenticated, IsBakeryAdmin]
+
+
+class SiteSettingsView(generics.RetrieveAPIView):
+    # Public — the homepage reads this to pick its hero photo. Singleton,
+    # so there's no pk in the URL.
+    serializer_class = SiteSettingsSerializer
+    permission_classes = [AllowAny]
+
+    def get_object(self):
+        return SiteSettings.load()
+
+
+class AdminSiteSettingsView(generics.RetrieveUpdateAPIView):
+    # Lets the baker swap the homepage background herself (e.g. a
+    # Christmas or Thanksgiving theme) without a code deploy.
+    serializer_class = AdminSiteSettingsSerializer
+    permission_classes = [IsAuthenticated, IsBakeryAdmin]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def get_object(self):
+        return SiteSettings.load()
+
+    def delete(self, request, *args, **kwargs):
+        # Resets to the site's bundled default photo — a plain multipart
+        # PATCH can't easily express "clear this file field" from a
+        # <input type=file>, so this is a dedicated reset action.
+        settings_obj = self.get_object()
+        settings_obj.hero_image.delete(save=False)
+        settings_obj.hero_image = None
+        settings_obj.save()
+        return Response(self.get_serializer(settings_obj).data)
