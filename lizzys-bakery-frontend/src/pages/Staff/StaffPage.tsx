@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import toast from 'react-hot-toast';
 import {
   fetchRoster,
   clockIn,
@@ -7,6 +8,7 @@ import {
   fetchTodayStock,
   setStock,
   logSale,
+  uploadProductPhoto,
 } from '../../api/staff';
 import fetchProducts from '../../api/products';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
@@ -49,6 +51,8 @@ export default function StaffPage() {
   const [stockQuantity, setStockQuantity] = useState('');
   const [saleProductId, setSaleProductId] = useState<number | ''>('');
   const [saleQuantity, setSaleQuantity] = useState('1');
+  const [photoProductId, setPhotoProductId] = useState<number | ''>('');
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [actionError, setActionError] = useState('');
   const [finalSummary, setFinalSummary] = useState<ShiftSummary | null>(null);
 
@@ -111,6 +115,19 @@ export default function StaffPage() {
       refreshShiftData();
     } catch (err) {
       setActionError(extractErrorMessage(err));
+    }
+  }
+
+  async function handleUploadPhoto(file: File) {
+    if (photoProductId === '') return;
+    setIsUploadingPhoto(true);
+    try {
+      await uploadProductPhoto(photoProductId, file);
+      toast.success('Photo added to the menu');
+    } catch (err) {
+      toast.error(extractErrorMessage(err));
+    } finally {
+      setIsUploadingPhoto(false);
     }
   }
 
@@ -317,6 +334,40 @@ export default function StaffPage() {
             </button>
           </form>
         )}
+      </div>
+
+      {/* --- ADD A PRODUCT PHOTO --- */}
+      <div className="bg-white rounded-2xl shadow-sm p-5 mb-6 border-t-4 border-bakery-pink">
+        <h2 className="font-semibold text-bakery-brown mb-1">Add a Product Photo</h2>
+        <p className="text-xs text-bakery-brown/70 mb-3">
+          Snapped a photo of a finished cake? Add it straight to the menu.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <select
+            aria-label="Product to photograph"
+            value={photoProductId}
+            onChange={(e) => setPhotoProductId(e.target.value ? Number(e.target.value) : '')}
+            className="flex-1 min-w-40 border border-bakery-pink/30 rounded-lg px-3 py-2 text-sm"
+          >
+            <option value="">Choose an item</option>
+            {products.map((p) => (
+              <option key={p.id} value={p.id}>{p.name}</option>
+            ))}
+          </select>
+          <input
+            type="file"
+            accept="image/*"
+            aria-label="Photo file"
+            disabled={photoProductId === '' || isUploadingPhoto}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) handleUploadPhoto(file);
+              e.target.value = '';
+            }}
+            className="text-xs text-bakery-brown/70 self-center"
+          />
+        </div>
+        {isUploadingPhoto && <p className="text-xs text-bakery-brown/70 mt-2">Uploading…</p>}
       </div>
 
       {/* --- YOUR SALES TODAY --- */}
