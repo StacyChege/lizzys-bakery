@@ -40,6 +40,7 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [zones, setZones] = useState<AdminDeliveryZone[]>([]);
   const [statusFilter, setStatusFilter] = useState<OrderStatus | ''>('');
+  const [dateFilter, setDateFilter] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -51,8 +52,8 @@ export default function OrdersPage() {
   const [newBlockDate, setNewBlockDate] = useState('');
   const [newBlockReason, setNewBlockReason] = useState('');
 
-  const loadOrders = useCallback((status: OrderStatus | '') => {
-    fetchAdminOrders(status || undefined)
+  const loadOrders = useCallback((status: OrderStatus | '', dateNeeded: string) => {
+    fetchAdminOrders({ status: status || undefined, dateNeeded: dateNeeded || undefined })
       .then(setOrders)
       .catch(() => setError('Could not load orders.'));
   }, []);
@@ -77,15 +78,20 @@ export default function OrdersPage() {
     loadCalendar();
   }, [loadCalendar]);
 
-  function handleFilterChange(status: OrderStatus | '') {
+  function handleStatusFilterChange(status: OrderStatus | '') {
     setStatusFilter(status);
-    loadOrders(status);
+    loadOrders(status, dateFilter);
+  }
+
+  function handleDateFilterChange(date: string) {
+    setDateFilter(date);
+    loadOrders(statusFilter, date);
   }
 
   async function handleStatusChange(order: Order, status: OrderStatus) {
     try {
       await updateOrderStatus(order.id, status);
-      loadOrders(statusFilter);
+      loadOrders(statusFilter, dateFilter);
     } catch (err) {
       toast.error(extractErrorMessage(err));
     }
@@ -158,19 +164,36 @@ export default function OrdersPage() {
           <>
             {/* --- ORDER INBOX --- */}
             <div className="bg-white rounded-2xl shadow-sm p-5 mb-6 border-t-4 border-bakery-pink-dark">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
                 <h2 className="font-semibold text-bakery-brown">All Orders</h2>
-                <select
-                  aria-label="Filter orders by status"
-                  value={statusFilter}
-                  onChange={(e) => handleFilterChange(e.target.value as OrderStatus | '')}
-                  className="border border-bakery-pink/30 rounded-lg px-3 py-1.5 text-sm"
-                >
-                  <option value="">All statuses</option>
-                  {STATUS_OPTIONS.map((s) => (
-                    <option key={s} value={s}>{ORDER_STATUS_LABELS[s]}</option>
-                  ))}
-                </select>
+                <div className="flex flex-wrap items-center gap-2">
+                  <input
+                    type="date"
+                    aria-label="Filter orders by date needed"
+                    value={dateFilter}
+                    onChange={(e) => handleDateFilterChange(e.target.value)}
+                    className="border border-bakery-pink/30 rounded-lg px-3 py-1.5 text-sm"
+                  />
+                  {dateFilter && (
+                    <button
+                      onClick={() => handleDateFilterChange('')}
+                      className="text-xs text-bakery-pink-dark hover:underline"
+                    >
+                      Clear date
+                    </button>
+                  )}
+                  <select
+                    aria-label="Filter orders by status"
+                    value={statusFilter}
+                    onChange={(e) => handleStatusFilterChange(e.target.value as OrderStatus | '')}
+                    className="border border-bakery-pink/30 rounded-lg px-3 py-1.5 text-sm"
+                  >
+                    <option value="">All statuses</option>
+                    {STATUS_OPTIONS.map((s) => (
+                      <option key={s} value={s}>{ORDER_STATUS_LABELS[s]}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               {orders.length === 0 ? (
