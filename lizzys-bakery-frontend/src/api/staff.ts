@@ -70,6 +70,14 @@ export async function logSale(productId: number, quantity: number): Promise<Sale
   return res.data;
 }
 
+export async function uploadProductPhoto(productId: number, file: File): Promise<void> {
+  const formData = new FormData();
+  formData.append('image', file);
+  await staffAxios.post(`/staff/products/${productId}/photo/`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+}
+
 export async function fetchAdminSummary(date?: string): Promise<AdminDailySummary> {
   const res = await axiosInstance.get<AdminDailySummary>('/staff/summary/', {
     params: date ? { date } : {},
