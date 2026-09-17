@@ -175,6 +175,33 @@ class AdminOrderTests(APITestCase):
         self.assertEqual(len(res.data), 1)
         self.assertEqual(res.data[0]['status'], Order.CANCELLED)
 
+    def test_list_filters_by_exact_date_needed(self):
+        other_day = timezone.localdate() + timedelta(days=3)
+        Order.objects.create(
+            contact_name='Later', contact_phone='07', date_needed=other_day,
+            fulfilment_method=Order.PICKUP, subtotal=Decimal('1'), total=Decimal('1'),
+        )
+        self.client.force_authenticate(user=self.admin)
+        res = self.client.get(reverse('admin-order-list'), {'date_needed': other_day.isoformat()})
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.data), 1)
+        self.assertEqual(res.data[0]['contact_name'], 'Later')
+
+    def test_list_filters_by_date_range(self):
+        far_day = timezone.localdate() + timedelta(days=30)
+        Order.objects.create(
+            contact_name='Far Out', contact_phone='07', date_needed=far_day,
+            fulfilment_method=Order.PICKUP, subtotal=Decimal('1'), total=Decimal('1'),
+        )
+        self.client.force_authenticate(user=self.admin)
+        res = self.client.get(reverse('admin-order-list'), {
+            'date_from': timezone.localdate().isoformat(),
+            'date_to': (timezone.localdate() + timedelta(days=7)).isoformat(),
+        })
+        names = [o['contact_name'] for o in res.data]
+        self.assertIn('Someone', names)
+        self.assertNotIn('Far Out', names)
+
     def test_status_update_sends_email_and_returns_full_order(self):
         self.client.force_authenticate(user=self.admin)
         url = reverse('admin-order-status-update', args=[self.order.id])
