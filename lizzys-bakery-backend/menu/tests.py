@@ -167,6 +167,36 @@ class CustomCakeRequestTests(MenuBase):
         self.assertEqual(res.status_code, 400)
 
 
+class AdminCustomCakeRequestListTests(MenuBase):
+    def test_list_filters_by_status_and_date(self):
+        near_day = timezone.localdate() + timedelta(days=6)
+        far_day = timezone.localdate() + timedelta(days=40)
+        CustomCakeRequest.objects.create(
+            name='Near', email='near@example.com', phone_number='07',
+            date_needed=near_day, status=CustomCakeRequest.QUOTED,
+        )
+        CustomCakeRequest.objects.create(
+            name='Far', email='far@example.com', phone_number='07',
+            date_needed=far_day, status=CustomCakeRequest.PENDING,
+        )
+        self.client.force_authenticate(user=self.admin)
+        url = reverse('admin-custom-cake-request-list')
+
+        by_status = self.client.get(url, {'status': CustomCakeRequest.QUOTED})
+        self.assertEqual([r['name'] for r in by_status.data], ['Near'])
+
+        by_date = self.client.get(url, {'date_needed': near_day.isoformat()})
+        self.assertEqual([r['name'] for r in by_date.data], ['Near'])
+
+        by_range = self.client.get(url, {
+            'date_from': timezone.localdate().isoformat(),
+            'date_to': (timezone.localdate() + timedelta(days=10)).isoformat(),
+        })
+        names = [r['name'] for r in by_range.data]
+        self.assertIn('Near', names)
+        self.assertNotIn('Far', names)
+
+
 class AdminCustomCakeRequestTests(MenuBase):
     def setUp(self):
         super().setUp()
