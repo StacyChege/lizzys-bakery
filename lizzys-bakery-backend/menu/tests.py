@@ -33,6 +33,11 @@ class MenuBase(APITestCase):
             category=self.pastries, name='Sold Out Bun', base_price=Decimal('100'),
             is_available=False,
         )
+        self.graduation = Category.objects.create(name='Graduation Cakes', sort_order=3)
+        self.grad_cake = Product.objects.create(
+            category=self.graduation, name='Scholarly Cap & Tassel Cake', base_price=Decimal('3500'),
+            available_flavours=['Vanilla Marble', 'Chocolate Velvet'],
+        )
         self.admin = User.objects.create_user(
             email='baker@example.com', full_name='Baker', password='pw-123456', role=User.ADMIN,
         )
@@ -45,7 +50,7 @@ class PublicMenuTests(MenuBase):
     def test_category_list_is_public(self):
         res = self.client.get(reverse('category-list'))
         self.assertEqual(res.status_code, 200)
-        self.assertEqual([c['name'] for c in res.data], ['Cakes', 'Pastries'])
+        self.assertEqual([c['name'] for c in res.data], ['Cakes', 'Pastries', 'Graduation Cakes'])
 
     def test_product_list_hides_unavailable_products(self):
         res = self.client.get(reverse('product-list'))
@@ -60,7 +65,21 @@ class PublicMenuTests(MenuBase):
 
     def test_product_list_search_matches_name_or_description(self):
         res = self.client.get(reverse('product-list'), {'search': 'chocolate'})
-        self.assertEqual([p['name'] for p in res.data], ['Red Velvet'])
+        names = {p['name'] for p in res.data}
+        # "chocolate" is in Red Velvet's description AND the graduation
+        # cake's flavour list — both should come back.
+        self.assertEqual(names, {'Red Velvet', 'Scholarly Cap & Tassel Cake'})
+
+    def test_product_list_search_matches_category_name(self):
+        # PRD F1's own example ("graduation") only ever appears in the
+        # Category name, never in a product's name or description.
+        res = self.client.get(reverse('product-list'), {'search': 'graduation'})
+        self.assertEqual([p['name'] for p in res.data], ['Scholarly Cap & Tassel Cake'])
+
+    def test_product_list_search_matches_flavour_only_keyword(self):
+        # "almond" only appears in Butter Croissant's flavour list.
+        res = self.client.get(reverse('product-list'), {'search': 'almond'})
+        self.assertEqual([p['name'] for p in res.data], ['Butter Croissant'])
 
     def test_product_list_includes_available_flavours(self):
         res = self.client.get(reverse('product-list'))
