@@ -10,6 +10,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from menu.models import CustomCakeRequest
 from .emails import send_order_confirmation_email, send_order_status_email
+from .filters import OrderFilter
 from .models import BlockedDate, DeliveryZone, Order, OrderItem
 from .permissions import IsBakeryAdmin
 from .serializers import (
@@ -67,7 +68,7 @@ class AdminOrderListView(generics.ListAPIView):
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated, IsBakeryAdmin]
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['status']
+    filterset_class = OrderFilter
 
 
 class AdminOrderStatusUpdateView(generics.UpdateAPIView):
