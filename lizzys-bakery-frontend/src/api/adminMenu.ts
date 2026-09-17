@@ -55,11 +55,19 @@ export async function deleteProductImage(imageId: number): Promise<void> {
   await axiosInstance.delete(`/menu/admin/product-images/${imageId}/`);
 }
 
+export interface AdminCustomCakeRequestFilters {
+  status?: CustomCakeRequestStatus;
+  dateNeeded?: string;
+}
+
 export async function fetchAdminCustomCakeRequests(
-  status?: CustomCakeRequestStatus
+  filters: AdminCustomCakeRequestFilters = {}
 ): Promise<AdminCustomCakeRequest[]> {
   const res = await axiosInstance.get<AdminCustomCakeRequest[]>('/menu/admin/custom-cake-requests/', {
-    params: status ? { status } : {},
+    params: {
+      status: filters.status || undefined,
+      date_needed: filters.dateNeeded || undefined,
+    },
   });
   return res.data;
 }
