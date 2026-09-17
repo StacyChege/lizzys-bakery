@@ -31,9 +31,17 @@ export async function fetchMyOrders(): Promise<Order[]> {
   return res.data;
 }
 
-export async function fetchAdminOrders(status?: OrderStatus): Promise<Order[]> {
+export interface AdminOrderFilters {
+  status?: OrderStatus;
+  dateNeeded?: string;
+}
+
+export async function fetchAdminOrders(filters: AdminOrderFilters = {}): Promise<Order[]> {
   const res = await axiosInstance.get<Order[]>('/orders/admin/', {
-    params: status ? { status } : {},
+    params: {
+      status: filters.status || undefined,
+      date_needed: filters.dateNeeded || undefined,
+    },
   });
   return res.data;
 }
