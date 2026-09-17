@@ -1,16 +1,22 @@
+import base64
 from datetime import timedelta
 from decimal import Decimal
 
 from django.contrib.auth import get_user_model
 from django.core import mail
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from django.utils import timezone
 from rest_framework.test import APITestCase
 
 from orders.models import BlockedDate
-from .models import Category, CustomCakeRequest, Product, Testimonial
+from .models import Category, CustomCakeRequest, Product, SiteSettings, Testimonial
 
 User = get_user_model()
+
+ONE_PIXEL_PNG = base64.b64decode(
+    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='
+)
 
 
 def valid_date(days=7):
@@ -191,3 +197,49 @@ class AdminCustomCakeRequestTests(MenuBase):
         self.req.refresh_from_db()
         self.assertEqual(self.req.name, 'Aisha K')
         self.assertEqual(self.req.occasion, 'Birthday')
+
+
+class SiteSettingsTests(MenuBase):
+    def _photo(self, name='hero.png'):
+        return SimpleUploadedFile(name, ONE_PIXEL_PNG, content_type='image/png')
+
+    def test_public_endpoint_defaults_to_no_hero_image(self):
+        res = self.client.get(reverse('site-settings'))
+        self.assertEqual(res.status_code, 200)
+        self.assertIsNone(res.data['hero_image'])
+
+    def test_admin_can_set_the_hero_image(self):
+        self.client.force_authenticate(user=self.admin)
+        res = self.client.patch(
+            reverse('admin-site-settings'), {'image': self._photo()}, format='multipart',
+        )
+        # The uploaded field is called hero_image, not image — a wrong key
+        # should be silently ignored rather than setting anything.
+        self.assertEqual(res.status_code, 200)
+        self.assertFalse(SiteSettings.load().hero_image)
+
+        res = self.client.patch(
+            reverse('admin-site-settings'), {'hero_image': self._photo()}, format='multipart',
+        )
+        self.assertEqual(res.status_code, 200)
+        settings_obj = SiteSettings.load()
+        self.assertTrue(settings_obj.hero_image.name)
+
+        public_res = self.client.get(reverse('site-settings'))
+        self.assertIsNotNone(public_res.data['hero_image'])
+
+    def test_customers_cannot_change_the_hero_image(self):
+        self.client.force_authenticate(user=self.customer)
+        res = self.client.patch(
+            reverse('admin-site-settings'), {'hero_image': self._photo()}, format='multipart',
+        )
+        self.assertEqual(res.status_code, 403)
+
+    def test_admin_can_reset_to_the_default_photo(self):
+        self.client.force_authenticate(user=self.admin)
+        self.client.patch(reverse('admin-site-settings'), {'hero_image': self._photo()}, format='multipart')
+        self.assertTrue(SiteSettings.load().hero_image)
+
+        res = self.client.delete(reverse('admin-site-settings'))
+        self.assertEqual(res.status_code, 200)
+        self.assertFalse(SiteSettings.load().hero_image)
