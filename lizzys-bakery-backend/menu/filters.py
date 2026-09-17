@@ -6,7 +6,11 @@ class ProductFilter(django_filters.FilterSet):
     # ?category=wedding-cakes — filters by the Category's slug, not its numeric id
     category = django_filters.CharFilter(field_name='category__slug', lookup_expr='exact')
 
-    # ?search=chocolate — case-insensitive partial match on name OR description
+    # ?search=chocolate — case-insensitive partial match on name, description,
+    # category name, or flavour. PRD F1 gives "graduation" as an example
+    # search term, but that word only ever appears in the Category name
+    # ("Graduation Cakes"), never in a product's own name/description — so
+    # category name has to be part of this or that example returns nothing.
     search = django_filters.CharFilter(method='filter_search')
 
     # ?flavour=vanilla — matches any entry in the available_flavours JSON list.
@@ -26,8 +30,16 @@ class ProductFilter(django_filters.FilterSet):
 
     def filter_search(self, queryset, name, value):
         from django.db.models import Q
+        needle = value.lower()
+        flavour_matches = [
+            product.id for product in queryset
+            if any(needle in (flavour or '').lower() for flavour in product.available_flavours)
+        ]
         return queryset.filter(
-            Q(name__icontains=value) | Q(description__icontains=value)
+            Q(name__icontains=value)
+            | Q(description__icontains=value)
+            | Q(category__name__icontains=value)
+            | Q(id__in=flavour_matches)
         )
 
     def filter_flavour(self, queryset, name, value):
