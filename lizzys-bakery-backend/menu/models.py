@@ -143,3 +143,25 @@ class Testimonial(models.Model):
 
     def __str__(self):
         return f'{self.author_name}: {self.quote[:40]}'
+
+
+class SiteSettings(models.Model):
+    # Singleton (always pk=1) — content the baker can swap without a code
+    # deploy. Starts with just the homepage hero photo, so she can switch
+    # to a Christmas/Thanksgiving/etc. theme herself. Blank means "use the
+    # site's bundled default photo" — see HomePage's fallback on the
+    # frontend.
+    hero_image = models.ImageField(upload_to='site/', blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def load(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def __str__(self):
+        return 'Site Settings'
