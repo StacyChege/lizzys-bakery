@@ -2,18 +2,29 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Cake, Heart, Sparkles, Quote } from 'lucide-react';
 import ScallopDivider from '../../components/ScallopDivider';
-import heroImage from '../../assets/hero-cake-coffee.jpg';
+import defaultHeroImage from '../../assets/hero-cake-coffee.jpg';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { fetchTestimonials } from '../../api/testimonials';
+import { fetchSiteSettings } from '../../api/siteSettings';
+import mediaUrl from '../../utils/mediaUrl';
 import type Testimonial from '../../types/Testimonial';
 
 export default function HomePage() {
   useDocumentTitle('');
 
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  // Falls back to the bundled default photo until the baker sets her own
+  // (e.g. a Christmas or Thanksgiving theme) from the admin dashboard.
+  const [heroImage, setHeroImage] = useState(defaultHeroImage);
 
   useEffect(() => {
     fetchTestimonials().then(setTestimonials).catch(() => {});
+    fetchSiteSettings()
+      .then((settings) => {
+        const customHero = mediaUrl(settings.hero_image);
+        if (customHero) setHeroImage(customHero);
+      })
+      .catch(() => {});
   }, []);
 
   return (
