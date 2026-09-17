@@ -5,6 +5,7 @@ from .models import (
     CustomCakeRequest,
     Product,
     ProductImage,
+    SiteSettings,
     Testimonial,
 )
 
@@ -54,3 +55,16 @@ class TestimonialAdmin(admin.ModelAdmin):
     list_editable = ['is_published', 'sort_order']
     search_fields = ['author_name', 'quote']
     readonly_fields = ['created_at']
+
+
+@admin.register(SiteSettings)
+class SiteSettingsAdmin(admin.ModelAdmin):
+    # Singleton — no add/delete, just edit the one row.
+    list_display = ['updated_at']
+    readonly_fields = ['updated_at']
+
+    def has_add_permission(self, request):
+        return not SiteSettings.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
