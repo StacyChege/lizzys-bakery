@@ -6,6 +6,7 @@ import type Product from '../../types/Product';
 import useDebounce from '../../hooks/useDebounce';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import ProductCard from '../../components/ProductCard';
+import categoryAccent from '../../utils/categoryAccent';
 
 export default function MenuPage() {
   useDocumentTitle('Menu');
@@ -205,9 +206,12 @@ export default function MenuPage() {
           All
         </button>
 
-        {/* Dynamic Category Pills fetched from Django */}
+        {/* Dynamic Category Pills fetched from Django — each category keeps
+            its own tint when unselected, so the row itself hints at the
+            colours used in the grid below. */}
         {categories.map((category) => {
           const isSelected = selectedCategory === category.slug;
+          const accent = categoryAccent(category.name);
           return (
             <button
               key={category.id}
@@ -215,7 +219,7 @@ export default function MenuPage() {
               className={`whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
                 isSelected
                   ? 'bg-bakery-pink-dark text-white'
-                  : 'bg-bakery-cream text-bakery-brown hover:bg-bakery-pink/20'
+                  : `${accent.chipBg} text-bakery-brown hover:opacity-75`
               }`}
             >
               {category.name}

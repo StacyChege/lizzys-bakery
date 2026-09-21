@@ -6,6 +6,7 @@ import type { ProductDetail } from '../../types/Product';
 import { useCart } from '../../hooks/useCart';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import mediaUrl from '../../utils/mediaUrl';
+import categoryAccent from '../../utils/categoryAccent';
 
 export default function ProductDetailPage() {
   const { addItem } = useCart();
@@ -121,9 +122,9 @@ export default function ProductDetailPage() {
 
       {/* ---------- DETAILS + SELECTORS ---------- */}
       <div>
-        <p className="text-xs text-bakery-brown/70 uppercase tracking-wide mb-1">
+        <span className={`inline-block text-xs font-medium text-bakery-brown uppercase tracking-wider px-2 py-0.5 rounded-full mb-2 ${categoryAccent(product.category.name).chipBg}`}>
           {product.category.name}
-        </p>
+        </span>
         <h1 className="font-script text-4xl text-bakery-pink-dark mb-2">{product.name}</h1>
         <p className="text-bakery-brown/70 mb-4">{product.description}</p>
 

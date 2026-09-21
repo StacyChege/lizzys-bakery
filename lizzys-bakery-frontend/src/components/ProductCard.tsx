@@ -1,16 +1,19 @@
 import type Product from '../types/Product';
 import { Link } from 'react-router-dom';
 import mediaUrl from '../utils/mediaUrl';
+import categoryAccent from '../utils/categoryAccent';
 
 interface ProductCardProps {
   product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const accent = categoryAccent(product.category);
+
   return (
     <Link
       to={`/product/${product.slug}`}
-      className={`relative block rounded-xl bg-white overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all border-t-4 border-bakery-pink ${
+      className={`relative block rounded-xl bg-white overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all border-t-4 ${accent.border} ${
         !product.is_available ? 'opacity-60' : ''
       }`}
     >
@@ -37,10 +40,10 @@ export default function ProductCard({ product }: ProductCardProps) {
       {/* Card Details */}
       <div className="p-4 flex flex-col justify-between grow">
         <div>
-          <span className="text-xs font-medium text-bakery-pink-dark uppercase tracking-wider">
+          <span className={`inline-block text-xs font-medium text-bakery-brown uppercase tracking-wider px-2 py-0.5 rounded-full ${accent.chipBg}`}>
             {product.category}
           </span>
-          <h3 className="font-semibold text-bakery-brown text-lg mt-0.5">
+          <h3 className="font-semibold text-bakery-brown text-lg mt-1.5">
             {product.name}
           </h3>
         </div>
