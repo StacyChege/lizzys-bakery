@@ -7,8 +7,29 @@
      bakery-pink measures ~4.0:1 there, just under WCAG AA's 4.5:1 for
      normal-size text. This hits ~6.7:1. */
   --color-bakery-pink-light: #FF8FAB;
-  --color-bakery-cream: #FFFFFF;
+  /* Was pure white (#FFFFFF) — flattened every page to a stark, sterile
+     background. This is the PRD's actual spec (#FFFCF9) and also matches
+     ScallopDivider's hardcoded fill, which was already this cream and
+     left a faint seam against the old white background. */
+  --color-bakery-cream: #FFFCF9;
   --color-bakery-brown: #3B2621;
+
+  /* A small pastel "macaron case" accent set, used sparingly (category
+     tags, highlight icons) so the site isn't wall-to-wall pink/brown —
+     each has a saturated tone for icons/borders and a pale tint for chip
+     backgrounds. Text on any of these stays bakery-brown, never the
+     accent colour itself, so contrast is never in question. The
+     saturated tones are deliberately darker than a "pure" pastel would
+     be — they're what the highlight icons render in against their own
+     pale circle, so they're tuned to clear WCAG 1.4.11's 3:1 non-text
+     minimum (verified: gold 3.8:1, mint 3.4:1, lavender 4.6:1). */
+  --color-bakery-mint: #2F8F65;
+  --color-bakery-mint-light: #DCF3E7;
+  --color-bakery-gold: #A66A00;
+  --color-bakery-gold-light: #FBEACB;
+  --color-bakery-lavender: #7454A8;
+  --color-bakery-lavender-light: #EAE1F7;
+
   --font-script: "Dancing Script", cursive;
   --font-body: "Poppins", sans-serif;
 }
