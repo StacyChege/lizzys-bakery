@@ -71,8 +71,8 @@ export default function HomePage() {
       {/* ---------- HIGHLIGHTS ---------- */}
       <div className="max-w-5xl mx-auto px-4 py-14 grid gap-8 sm:grid-cols-3 text-center">
         <div>
-          <div className="w-12 h-12 rounded-full bg-bakery-pink/20 flex items-center justify-center mx-auto mb-3">
-            <Cake className="w-6 h-6 text-bakery-pink-dark" strokeWidth={1.5} />
+          <div className="w-12 h-12 rounded-full bg-bakery-gold-light flex items-center justify-center mx-auto mb-3">
+            <Cake className="w-6 h-6 text-bakery-gold" strokeWidth={1.5} />
           </div>
           <p className="font-script text-2xl text-bakery-pink-dark mb-1">Baked Fresh</p>
           <p className="text-bakery-brown/70 text-sm">
@@ -89,8 +89,8 @@ export default function HomePage() {
           </p>
         </div>
         <div>
-          <div className="w-12 h-12 rounded-full bg-bakery-pink/20 flex items-center justify-center mx-auto mb-3">
-            <Sparkles className="w-6 h-6 text-bakery-pink-dark" strokeWidth={1.5} />
+          <div className="w-12 h-12 rounded-full bg-bakery-mint-light flex items-center justify-center mx-auto mb-3">
+            <Sparkles className="w-6 h-6 text-bakery-mint" strokeWidth={1.5} />
           </div>
           <p className="font-script text-2xl text-bakery-pink-dark mb-1">Custom Orders</p>
           <p className="text-bakery-brown/70 text-sm">
