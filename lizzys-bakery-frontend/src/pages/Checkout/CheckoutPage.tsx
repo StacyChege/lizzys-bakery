@@ -117,6 +117,19 @@ export default function CheckoutPage() {
   }
 
   if (placedOrder) {
+    const neededOn = parseApiDate(placedOrder.date_needed).toLocaleDateString('en-KE', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+    const fulfilmentLine =
+      placedOrder.fulfilment_method === 'PICKUP'
+        ? 'Pickup at the bakery'
+        : placedOrder.fulfilment_method === 'OWN_DELIVERY'
+        ? "Collected by your own rider/courier"
+        : `Bakery delivery${placedOrder.delivery_zone ? ` — ${placedOrder.delivery_zone.name}` : ''}`;
+
     return (
       <div className="min-h-[70vh] py-16 px-4">
         <div className="max-w-lg mx-auto text-center font-body">
@@ -126,6 +139,16 @@ export default function CheckoutPage() {
             details and arrange payment via M-Pesa.
           </p>
           <div className="bg-white rounded-2xl shadow-md p-6 text-left border-t-4 border-bakery-pink-dark">
+            {/* Restates what was actually booked, since this on-screen page —
+                unlike the confirmation email — is the only record a customer
+                who didn't give an email address ever sees. */}
+            <div className="bg-bakery-pink/10 rounded-xl px-4 py-3 mb-4">
+              <p className="font-semibold text-bakery-brown">Needed on {neededOn}</p>
+              <p className="text-sm text-bakery-brown/70">{fulfilmentLine}</p>
+              {placedOrder.delivery_address && (
+                <p className="text-sm text-bakery-brown/70">{placedOrder.delivery_address}</p>
+              )}
+            </div>
             <ul className="space-y-1 mb-3 text-sm">
               {placedOrder.items.map((i) => (
                 <li key={i.id} className="flex justify-between text-bakery-brown">
@@ -145,6 +168,11 @@ export default function CheckoutPage() {
               <span>KES {Number(placedOrder.total).toLocaleString()}</span>
             </div>
           </div>
+          <p className="text-xs text-bakery-brown/70 mt-4">
+            {placedOrder.fulfilment_method === 'PICKUP'
+              ? "The bakery is open Monday – Saturday, 8:00am – 6:00pm — we'll confirm your exact pickup time by phone or WhatsApp."
+              : "We'll confirm the exact delivery time by phone or WhatsApp once your order is booked in."}
+          </p>
           <Link to="/menu" className="inline-block mt-6 text-bakery-pink-dark underline text-sm">
             Back to the menu
           </Link>
