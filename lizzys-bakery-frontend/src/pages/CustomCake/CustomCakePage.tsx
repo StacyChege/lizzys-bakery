@@ -171,9 +171,24 @@ export default function CustomCakePage() {
       <div className="py-20 px-4">
         <div className="max-w-lg mx-auto text-center font-body">
           <p className="font-script text-4xl text-bakery-pink-dark mb-3">Request sent!</p>
-          <p className="text-bakery-brown/70">
+          <p className="text-bakery-brown/70 mb-6">
             Thanks, {firstName} — we'll be in touch at {email} to talk through the details and send you a quote.
           </p>
+          {/* Restates what was actually booked — the customer just spent
+              several steps configuring this, so confirm it stuck. */}
+          {dateNeeded && (
+            <div className="bg-bakery-pink/10 rounded-xl px-4 py-3 inline-block text-left">
+              <p className="font-semibold text-bakery-brown">
+                Needed on {dateNeeded.toLocaleDateString('en-KE', {
+                  weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+                })}
+              </p>
+              <p className="text-sm text-bakery-brown/70">
+                {resolveOther(occasion, occasionOther) || 'Custom cake'}
+                {tierCount > 1 ? ` · ${tierCount} tiers` : ''}
+              </p>
+            </div>
+          )}
         </div>
       </div>
     );
